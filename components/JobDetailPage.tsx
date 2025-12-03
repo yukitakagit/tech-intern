@@ -50,16 +50,24 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
           {/* Main Content */}
           <div className="flex-1 space-y-16">
             
-            {/* Intro / Narrative Description */}
+            {/* Company Introduction (Previously Work Overview) */}
             <section>
+                 <div className="flex items-center gap-3 mb-6">
+                     <div className="w-10 h-1 bg-black"></div>
+                     <h3 className="text-xl font-black text-gray-900 uppercase">企業紹介</h3>
+                 </div>
                  <p className="text-gray-800 leading-8 text-base font-medium whitespace-pre-wrap">
                     {job.description}
                 </p>
             </section>
 
-            {/* Business Content - No Frame, No Title */}
+            {/* Business Content - Added New Section */}
             {(job.businessContent) && (
                 <section>
+                    <div className="flex items-center gap-3 mb-6">
+                         <div className="w-10 h-1 bg-black"></div>
+                         <h3 className="text-xl font-black text-gray-900 uppercase">事業内容</h3>
+                    </div>
                     <p className="text-gray-800 leading-8 text-base font-medium whitespace-pre-wrap">
                         {job.businessContent}
                     </p>
@@ -68,9 +76,10 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
 
             {/* Job Detail */}
             <section>
-                <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-2">
-                   こんなことやります
-                </h3>
+                <div className="flex items-center gap-3 mb-6">
+                     <div className="w-10 h-1 bg-black"></div>
+                     <h3 className="text-xl font-black text-gray-900 uppercase">こんなことやります</h3>
+                </div>
                 <p className="text-gray-800 leading-8 text-base font-medium whitespace-pre-wrap">
                     {job.jobDetail}
                 </p>

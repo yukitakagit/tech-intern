@@ -12,7 +12,8 @@ export interface Company {
   representative?: string;
   industry?: string;
   coverImage?: string;
-  employees?: string; // New field
+  employees?: string;
+  businessContent?: string; // New field for Company Dashboard
 }
 
 export interface JobListing {
