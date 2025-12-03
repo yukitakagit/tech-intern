@@ -28,7 +28,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
   return (
     <div 
-      className="group flex flex-col bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-200 aspect-[1/1.3]"
+      className="group flex flex-col bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-200 aspect-[1/1.3]"
     >
       {/* Card Header Image - Takes up ~70% of the card */}
       <div className="relative h-[65%] w-full overflow-hidden">

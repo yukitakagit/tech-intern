@@ -1,4 +1,3 @@
-
 import { JobListing, Article } from './types';
 
 export const JOB_LISTINGS: JobListing[] = [

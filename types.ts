@@ -1,4 +1,3 @@
-
 export interface Company {
   id: string;
   name: string;
@@ -45,8 +44,41 @@ export interface Article {
 }
 
 export interface FilterState {
-  occupation: string[];
-  location: string[];
-  skills: string[];
+  occupations: string[];
+  languages: string[];
+  industries: string[];
+  areas: string[];
   characteristics: string[];
 }
+
+export interface UserProfile {
+  name: string;
+  gender: 'male' | 'female' | 'other' | '';
+  phone: string;
+  university: string;
+  faculty: string;
+  department: string;
+  graduationYear: string;
+  email: string;
+  address: string;
+  githubUrl: string;
+  skills: string;
+}
+
+export type AppRoute = 
+  | { name: 'HOME' }
+  | { name: 'JOB_DETAIL'; id: string }
+  | { name: 'COMPANY_DETAIL'; id: string; fromJobId?: string }
+  | { name: 'ARTICLE_DETAIL'; id: number }
+  | { name: 'LOGIN' }
+  | { name: 'REGISTER' }
+  | { name: 'MYPAGE'; tab?: 'profile' | 'chat' | 'history' | 'status' | 'password' }
+  | { name: 'APPLICATION'; jobId: string }
+  | { name: 'COMPANY_PROFILE' }
+  | { name: 'TERMS' }
+  | { name: 'PRIVACY' }
+  // Company Side Routes
+  | { name: 'COMPANY_LP' }
+  | { name: 'COMPANY_LOGIN' }
+  | { name: 'COMPANY_REGISTER' }
+  | { name: 'COMPANY_DASHBOARD' };

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { JobListing } from '../types';
 import { MapPin, Clock, DollarSign, ArrowRight, CheckCircle, Users, Briefcase, Star, Building2 } from 'lucide-react';
@@ -8,10 +7,11 @@ interface JobDetailPageProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onNavigateCompany: (companyId: string) => void;
+  onNavigateApply: (jobId: string) => void;
   onBack: () => void;
 }
 
-export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, onToggleFavorite, onNavigateCompany, onBack }) => {
+export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, onToggleFavorite, onNavigateCompany, onNavigateApply, onBack }) => {
   return (
     <div className="bg-white min-h-screen pb-20">
       {/* Hero Header - Company Atmosphere */}
@@ -122,16 +122,15 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
           <div className="w-full lg:w-96 space-y-8">
             <div 
                 className="bg-white rounded-sm shadow-xl border border-gray-100 sticky top-24 overflow-hidden cursor-pointer group hover:border-blue-500 transition-colors"
+                onClick={() => onNavigateCompany(job.company.id)}
             >
-                {/* Top Half Image */}
+                {/* Top Half Image - Logo removed as requested */}
                 <div 
                     className="h-32 w-full bg-gray-200 relative overflow-hidden"
-                    onClick={() => onNavigateCompany(job.company.id)}
                 >
                     <img src={job.company.coverImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt=""/>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div className="absolute bottom-4 left-4 flex items-center gap-3">
-                        <img src={job.company.logoUrl} className="w-10 h-10 rounded-full border-2 border-white" alt=""/>
                         <div className="text-white">
                             <h4 className="font-bold text-sm leading-tight">{job.company.name}</h4>
                         </div>
@@ -173,7 +172,13 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                         </div>
                     </div>
 
-                    <button className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-sm shadow-md transition-all flex items-center justify-center gap-3 group relative z-10">
+                    <button 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateApply(job.id);
+                        }}
+                        className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-sm shadow-md transition-all flex items-center justify-center gap-3 group relative z-10"
+                    >
                         話を聞きに行きたい <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform"/>
                     </button>
                     
@@ -188,14 +193,6 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                         {isFavorite ? 'お気に入りに追加済み' : 'お気に入りに追加'}
                     </button>
                     
-                     <div 
-                        className="mt-6 pt-4 border-t border-gray-100 cursor-pointer group/link text-center"
-                        onClick={() => onNavigateCompany(job.company.id)}
-                     >
-                        <span className="text-xs font-bold text-gray-400 group-hover/link:text-blue-600 transition-colors flex items-center justify-center gap-1">
-                            企業の詳細情報を見る <ArrowRight size={12} />
-                        </span>
-                    </div>
                 </div>
             </div>
           </div>

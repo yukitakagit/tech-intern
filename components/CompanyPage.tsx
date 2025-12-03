@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Company, JobListing } from '../types';
 import { JOB_LISTINGS } from '../constants';
@@ -9,11 +8,20 @@ interface CompanyPageProps {
   company: Company;
   onBack: () => void;
   onNavigateJobDetail: (id: string) => void;
+  fromJobId?: string; // Track origin to go back to specific job
 }
 
-export const CompanyPage: React.FC<CompanyPageProps> = ({ company, onBack, onNavigateJobDetail }) => {
+export const CompanyPage: React.FC<CompanyPageProps> = ({ company, onBack, onNavigateJobDetail, fromJobId }) => {
   // Find other jobs for this company
   const companyJobs = JOB_LISTINGS.filter(j => j.company.id === company.id);
+
+  const handleBack = () => {
+      if (fromJobId) {
+          onNavigateJobDetail(fromJobId);
+      } else {
+          onBack();
+      }
+  };
 
   return (
     <div className="bg-white min-h-screen pb-20">
@@ -30,8 +38,8 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ company, onBack, onNav
             
             {/* Top Back Button */}
             <div className="absolute top-6 left-6 z-20">
-                <button onClick={onBack} className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white text-sm font-bold px-4 py-2 rounded-full transition-colors">
-                    &larr; HOMEに戻る
+                <button onClick={handleBack} className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white text-sm font-bold px-4 py-2 rounded-full transition-colors">
+                    &larr; {fromJobId ? '募集詳細に戻る' : 'HOMEに戻る'}
                 </button>
             </div>
 
