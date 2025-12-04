@@ -1,35 +1,21 @@
+
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import { FAQ } from '../types';
 
-const FAQS = [
-  {
-    q: 'プログラミング未経験でも応募できますか？',
-    a: 'はい、一部の企業では未経験者向けの研修プログラムを用意したインターン募集を行っています。ただし、Tech internでは事前にProgateやドットインストール、または独学での基礎学習を済ませておくことを推奨しています。',
-  },
-  {
-    q: '大学の授業と両立は可能ですか？',
-    a: '多くの企業が学生のスケジュールに配慮しています。「週2日〜」「土日OK」「夕方から」など、柔軟なシフトの企業も多数あります。検索フィルターで「土日勤務OK」などを選択して探してみてください。',
-  },
-  {
-    q: '給与は支払われますか？',
-    a: 'Tech internに掲載されている全ての長期インターンシップは有給です。時給制が一般的ですが、成果報酬型の案件もあります。詳細は各求人票をご確認ください。',
-  },
-  {
-    q: 'リモートワークは可能ですか？',
-    a: 'はい、フルリモート可能な求人も多数掲載しています。特にWeb系・IT系の企業では、SlackやZoomを用いたリモート開発体制が整っていることが多いです。',
-  },
-  {
-    q: '選考にはどれくらいの期間がかかりますか？',
-    a: '平均して2週間〜1ヶ月程度です。GitHub連携をしておくと、技術スキルの証明がスムーズになり、書類選考の通過率が上がったり、選考期間が短縮される傾向にあります。',
-  },
-];
+interface FaqSectionProps {
+    faqs: FAQ[];
+}
 
-export const FaqSection: React.FC = () => {
+export const FaqSection: React.FC<FaqSectionProps> = ({ faqs }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  // Only show published FAQs
+  const displayFaqs = faqs.filter(f => f.status !== 'draft');
 
   return (
     <section className="py-20 bg-gray-50 border-t border-gray-200">
@@ -42,8 +28,8 @@ export const FaqSection: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          {FAQS.map((faq, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-sm overflow-hidden">
+          {displayFaqs.map((faq, index) => (
+            <div key={faq.id} className="bg-white border border-gray-200 rounded-sm overflow-hidden">
               <button
                 onClick={() => toggle(index)}
                 className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors"

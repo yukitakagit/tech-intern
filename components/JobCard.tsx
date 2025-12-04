@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { JobListing } from '../types';
 import { Sparkles, ArrowUpRight } from 'lucide-react';
@@ -54,9 +55,8 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
       {/* Card Content - Minimalist */}
       <div className="flex-1 p-5 flex flex-col justify-between bg-white relative">
         <div>
-            {/* Company Name */}
-            <div className="flex items-center gap-2 mb-2">
-                <img src={job.company.logoUrl} alt="" className="w-5 h-5 rounded-full border border-gray-100" />
+            {/* Company Name (Removed Logo) */}
+            <div className="mb-2">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wide truncate">
                     {job.company.name}
                 </span>

@@ -1,13 +1,17 @@
 
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { ARTICLES } from '../constants';
+import { Article } from '../types';
 
 interface ColumnSectionProps {
+  articles: Article[];
   onNavigateArticle: (id: number) => void;
 }
 
-export const ColumnSection: React.FC<ColumnSectionProps> = ({ onNavigateArticle }) => {
+export const ColumnSection: React.FC<ColumnSectionProps> = ({ articles, onNavigateArticle }) => {
+  // Only show published articles on Home
+  const publishedArticles = articles.filter(a => a.status !== 'draft');
+
   return (
     <section className="py-20 border-t border-gray-200">
       <div className="flex items-end justify-between mb-12">
@@ -23,7 +27,7 @@ export const ColumnSection: React.FC<ColumnSectionProps> = ({ onNavigateArticle 
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {ARTICLES.map((article) => (
+        {publishedArticles.map((article) => (
           <article 
             key={article.id} 
             className="group cursor-pointer flex flex-col gap-3"

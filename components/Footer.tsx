@@ -6,13 +6,17 @@ interface FooterProps {
   onNavigateTerms: () => void;
   onNavigatePrivacy: () => void;
   onNavigateCompanyProfile: () => void;
+  onNavigateCompanyLP: () => void;
+  onNavigateCompanyList: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
   onNavigateHome, 
   onNavigateTerms, 
   onNavigatePrivacy, 
-  onNavigateCompanyProfile 
+  onNavigateCompanyProfile,
+  onNavigateCompanyLP,
+  onNavigateCompanyList
 }) => {
   return (
     <footer className="bg-white border-t border-gray-200 pt-20 pb-10">
@@ -41,9 +45,9 @@ export const Footer: React.FC<FooterProps> = ({
                           </button>
                       </li>
                       <li>
-                          <span className="text-gray-300 cursor-not-allowed">
-                             長期インターン採用を検討中の企業様 (準備中)
-                          </span>
+                          <button onClick={onNavigateCompanyLP} className="hover:text-black transition-colors text-left">
+                             長期インターン採用を検討中の企業様
+                          </button>
                       </li>
                   </ul>
               </div>
@@ -65,7 +69,7 @@ export const Footer: React.FC<FooterProps> = ({
                   </ul>
               </div>
 
-              {/* Other Navigation */}
+              {/* Navigation */}
               <div>
                   <h5 className="font-bold text-sm text-gray-900 mb-6 uppercase tracking-wider">Navigation</h5>
                   <ul className="space-y-3 text-xs font-medium text-gray-500">
@@ -75,9 +79,9 @@ export const Footer: React.FC<FooterProps> = ({
                         </button>
                       </li>
                       <li>
-                        <span className="text-gray-300 cursor-not-allowed">
-                            その他 (準備中)
-                        </span>
+                        <button onClick={onNavigateCompanyList} className="hover:text-black transition-colors text-left">
+                            掲載企業一覧
+                        </button>
                       </li>
                   </ul>
               </div>

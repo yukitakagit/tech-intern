@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, Building2 } from 'lucide-react';
 
@@ -9,10 +10,12 @@ interface CompanyAuthProps {
 
 export const CompanyLogin: React.FC<CompanyAuthProps> = ({ onLoginSuccess, onNavigateAlternate, onBack }) => {
     const [email, setEmail] = useState('');
+    const [companyName, setCompanyName] = useState(''); // Added Company Name state
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onLoginSuccess('株式会社NextGen Creative');
+        // Use input company name if provided, else default
+        onLoginSuccess(companyName || '株式会社NextGen Creative');
     };
 
     return (
@@ -32,6 +35,18 @@ export const CompanyLogin: React.FC<CompanyAuthProps> = ({ onLoginSuccess, onNav
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Company Name Field Added */}
+                        <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase mb-2">会社名</label>
+                            <input 
+                                type="text" 
+                                required
+                                value={companyName}
+                                onChange={(e) => setCompanyName(e.target.value)}
+                                className="w-full p-3 bg-gray-900 border border-gray-700 rounded-sm text-white focus:border-blue-500 outline-none transition-colors"
+                                placeholder="貴社名を入力"
+                            />
+                        </div>
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Email Address</label>
                             <input 

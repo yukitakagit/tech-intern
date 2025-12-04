@@ -1,18 +1,50 @@
+
 import React, { useState } from 'react';
+import { Github, Chrome, Apple } from 'lucide-react'; // Using Chrome as Google proxy
 
 interface AuthProps {
-  onLoginSuccess: (name: string) => void;
+  onLoginSuccess: (name: string, isAdmin?: boolean) => void;
   onNavigateRegister: () => void;
   onNavigateLogin: () => void;
 }
 
+const SocialButtons = () => (
+    <div className="space-y-3 mb-6">
+        <button className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 font-bold py-2.5 rounded-sm hover:bg-gray-50 transition-colors text-sm">
+            <Chrome size={18} /> Googleで続行
+        </button>
+        <button className="w-full flex items-center justify-center gap-3 bg-[#24292e] text-white font-bold py-2.5 rounded-sm hover:bg-[#2f363d] transition-colors text-sm">
+            <Github size={18} /> GitHubで続行
+        </button>
+        <button className="w-full flex items-center justify-center gap-3 bg-black text-white font-bold py-2.5 rounded-sm hover:bg-gray-800 transition-colors text-sm">
+            <Apple size={18} /> Appleで続行
+        </button>
+    </div>
+);
+
+const Divider = () => (
+    <div className="flex items-center gap-4 my-6">
+        <div className="h-px bg-gray-200 flex-1"></div>
+        <span className="text-xs text-gray-400 font-bold">OR</span>
+        <div className="h-px bg-gray-200 flex-1"></div>
+    </div>
+);
+
 export const LoginPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNavigateRegister'>> = ({ onLoginSuccess, onNavigateRegister }) => {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login
-    onLoginSuccess('田中 太郎');
+    
+    // Admin Check
+    if (email === 'contact.kaxin@gmail.com' && password === 'kaxin.techintern') {
+        onLoginSuccess('Admin', true);
+        return;
+    }
+
+    // Normal Login
+    onLoginSuccess('田中 太郎', false);
   };
 
   return (
@@ -23,6 +55,9 @@ export const LoginPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNavigateR
             <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">Tech internへようこそ</p>
           </div>
           
+          <SocialButtons />
+          <Divider />
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Email Address</label>
@@ -40,11 +75,14 @@ export const LoginPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNavigateR
                <input 
                  type="password" 
                  required
+                 value={password}
+                 onChange={(e) => setPassword(e.target.value)}
                  className="w-full p-3 border border-gray-300 rounded-sm focus:border-black focus:ring-0 outline-none transition-colors"
                  placeholder="••••••••"
                />
             </div>
             
+            {/* Changed from Blue to Black as requested */}
             <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-sm hover:bg-gray-800 transition-colors shadow-lg">
                 ログイン
             </button>
@@ -66,7 +104,7 @@ export const RegisterPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNaviga
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onLoginSuccess(name);
+        onLoginSuccess(name, false);
     };
 
     return (
@@ -77,6 +115,9 @@ export const RegisterPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNaviga
             <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">新規会員登録</p>
           </div>
           
+          <SocialButtons />
+          <Divider />
+
           <form onSubmit={handleSubmit} className="space-y-4">
              <div>
                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Full Name</label>
@@ -107,16 +148,8 @@ export const RegisterPage: React.FC<Pick<AuthProps, 'onLoginSuccess' | 'onNaviga
                  placeholder="••••••••"
                />
             </div>
-             <div>
-               <label className="block text-xs font-bold text-gray-700 uppercase mb-2">University / Grade</label>
-               <input 
-                 type="text" 
-                 className="w-full p-3 border border-gray-300 rounded-sm focus:border-black focus:ring-0 outline-none transition-colors"
-                 placeholder="〇〇大学 3年生"
-               />
-            </div>
             
-            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-sm hover:bg-blue-700 transition-colors shadow-lg mt-4">
+            <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-sm hover:bg-gray-800 transition-colors shadow-lg mt-4">
                 アカウント作成
             </button>
           </form>

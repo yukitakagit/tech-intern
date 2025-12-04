@@ -1,3 +1,4 @@
+
 export interface Company {
   id: string;
   name: string;
@@ -27,6 +28,7 @@ export interface JobListing {
   workStyle: 'Remote' | 'Hybrid' | 'On-site';
   description: string;
   requiredSkills: string[];
+  status?: 'published' | 'draft'; // New field for draft functionality
   
   // Detailed fields
   businessContent?: string;
@@ -42,6 +44,14 @@ export interface Article {
   category: string;
   image: string;
   content: string; // Detailed content
+  status?: 'published' | 'draft';
+}
+
+export interface FAQ {
+  id: number;
+  q: string;
+  a: string;
+  status?: 'published' | 'draft';
 }
 
 export interface FilterState {
@@ -70,6 +80,7 @@ export type AppRoute =
   | { name: 'HOME' }
   | { name: 'JOB_DETAIL'; id: string }
   | { name: 'COMPANY_DETAIL'; id: string; fromJobId?: string }
+  | { name: 'COMPANY_LIST' }
   | { name: 'ARTICLE_DETAIL'; id: number }
   | { name: 'LOGIN' }
   | { name: 'REGISTER' }
@@ -82,4 +93,5 @@ export type AppRoute =
   | { name: 'COMPANY_LP' }
   | { name: 'COMPANY_LOGIN' }
   | { name: 'COMPANY_REGISTER' }
-  | { name: 'COMPANY_DASHBOARD' };
+  | { name: 'COMPANY_DASHBOARD' }
+  | { name: 'ADMIN_DASHBOARD' };
