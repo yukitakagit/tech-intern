@@ -1,15 +1,16 @@
 
-import React, { useState } from 'react';
-import { JobListing } from '../types';
+import React, { useState, useEffect } from 'react';
+import { JobListing, UserProfile } from '../types';
 import { Send, ArrowLeft, CheckCircle } from 'lucide-react';
 
 interface ApplicationPageProps {
   job: JobListing;
   onBack: () => void;
   onSubmit: () => void;
+  initialData?: UserProfile | null;
 }
 
-export const ApplicationPage: React.FC<ApplicationPageProps> = ({ job, onBack, onSubmit }) => {
+export const ApplicationPage: React.FC<ApplicationPageProps> = ({ job, onBack, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     university: '',
     faculty: '',
@@ -19,6 +20,20 @@ export const ApplicationPage: React.FC<ApplicationPageProps> = ({ job, onBack, o
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+      if (initialData) {
+          setFormData(prev => ({
+              ...prev,
+              university: initialData.university || '',
+              faculty: `${initialData.faculty} ${initialData.department}`,
+              grade: initialData.graduationYear ? `${initialData.graduationYear}年卒` : '',
+              name: initialData.name || '',
+              email: initialData.email || '',
+              // Optional: pre-fill message
+          }));
+      }
+  }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

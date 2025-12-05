@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Search } from 'lucide-react';
 import { FilterState } from '../types';
@@ -8,6 +9,7 @@ interface SidebarProps {
     setSearchQuery: (query: string) => void;
     filters: FilterState;
     setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
+    hideSearch?: boolean; // New prop
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -15,7 +17,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     searchQuery, 
     setSearchQuery,
     filters,
-    setFilters
+    setFilters,
+    hideSearch = false
 }) => {
 
   const handleCheckboxChange = (category: keyof FilterState, value: string) => {
@@ -30,17 +33,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside className="hidden lg:block w-64 flex-shrink-0 space-y-10 pr-4">
-      {/* Search Box */}
-      <div className="relative group">
-        <input 
-          type="text" 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="キーワード検索..." 
-          className="w-full pl-9 pr-4 py-2 bg-transparent border-b-2 border-gray-300 text-sm font-medium focus:outline-none focus:border-black transition-colors placeholder-gray-400"
-        />
-        <Search className="absolute left-0 top-2.5 text-gray-400 group-focus-within:text-black transition-colors" size={16} />
-      </div>
+      {/* Search Box - Hidden on Home if requested */}
+      {!hideSearch && (
+          <div className="relative group">
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="キーワード検索..." 
+              className="w-full pl-9 pr-4 py-2 bg-transparent border-b-2 border-gray-300 text-sm font-medium focus:outline-none focus:border-black transition-colors placeholder-gray-400"
+            />
+            <Search className="absolute left-0 top-2.5 text-gray-400 group-focus-within:text-black transition-colors" size={16} />
+          </div>
+      )}
 
       {/* Filter Groups - No frame, just text */}
       <div className="space-y-10">

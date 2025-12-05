@@ -41,7 +41,7 @@ export const CompanySection: React.FC<CompanySectionProps> = ({ onNavigateCompan
           >
             <div className="h-32 bg-gray-100 relative overflow-hidden">
                 {company.coverImage ? (
-                    <img src={company.coverImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 grayscale group-hover:grayscale-0" alt={company.name}/>
+                    <img src={company.coverImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={company.name}/>
                 ) : (
                     <div className="w-full h-full bg-gray-200"></div>
                 )}

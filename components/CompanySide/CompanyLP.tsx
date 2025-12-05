@@ -5,9 +5,18 @@ import { ArrowRight, Code, Cpu, Layers, Zap, Play, CheckCircle } from 'lucide-re
 interface CompanyLPProps {
   onNavigateLogin: () => void;
   onNavigateRegister: () => void;
+  onNavigateTerms: () => void;
+  onNavigatePrivacy: () => void;
+  onNavigateTokusho: () => void;
 }
 
-export const CompanyLP: React.FC<CompanyLPProps> = ({ onNavigateLogin, onNavigateRegister }) => {
+export const CompanyLP: React.FC<CompanyLPProps> = ({ 
+    onNavigateLogin, 
+    onNavigateRegister,
+    onNavigateTerms,
+    onNavigatePrivacy,
+    onNavigateTokusho
+}) => {
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
 
@@ -331,13 +340,19 @@ export const CompanyLP: React.FC<CompanyLPProps> = ({ onNavigateLogin, onNavigat
       </section>
 
       {/* Footer */}
-      <footer className="py-10 border-t border-gray-200 bg-gray-50 text-center">
-         <div className="flex items-center justify-center gap-2 mb-6">
+      <footer className="py-10 border-t border-gray-200 bg-gray-50 text-center flex flex-col items-center">
+         <div className="flex flex-wrap justify-center gap-6 mb-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+            <button onClick={onNavigateTerms} className="hover:text-black transition-colors">利用規約</button>
+            <button onClick={onNavigatePrivacy} className="hover:text-black transition-colors">プライバシーポリシー</button>
+            <button onClick={onNavigateTokusho} className="hover:text-black transition-colors">特定商取引法に基づく表記</button>
+         </div>
+         
+         <div className="flex items-center justify-center gap-2 mb-2">
              <div className="w-2 h-2 bg-orange-600 rounded-sm"></div>
              <span className="text-xs font-bold tracking-widest text-gray-900 uppercase">Tech intern <span className="text-gray-500">/ Enterprise</span></span>
          </div>
          <p className="text-[10px] text-gray-500 font-mono">
-            © 2024 KAXIN Inc. All rights reserved.
+            © KAXIN Inc. All rights reserved.
          </p>
       </footer>
 

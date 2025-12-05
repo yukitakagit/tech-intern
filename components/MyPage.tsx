@@ -28,36 +28,36 @@ const initialProfile: UserProfile = {
   skills: 'React, TypeScript, Go',
 };
 
-// Mock Chat Data
-const CHAT_CONTACTS = [
-    { id: '1', name: '株式会社NextGen Creative', lastMessage: '面談の日程についてですが...', time: '10分前' },
-    { id: '2', name: 'CyberScale Inc.', lastMessage: 'ご応募ありがとうございます。', time: '昨日' },
-    { id: '3', name: 'DesignShift', lastMessage: 'ポートフォリオを拝見しました。', time: '2日前' },
+// Mock Applications for Status Board (Simulating DB)
+// In a real app, this would be fetched.
+const MOCK_APPLICATIONS = [
+    {
+        id: 'app1',
+        job: JOB_LISTINGS[0],
+        date: '2025-05-15',
+        lastMessage: '面談の日程についてですが...',
+        time: '10分前'
+    },
+    {
+        id: 'app2',
+        job: JOB_LISTINGS[1],
+        date: '2025-05-10',
+        lastMessage: 'ご応募ありがとうございます。',
+        time: '昨日'
+    },
+    {
+        id: 'app3',
+        job: JOB_LISTINGS[4],
+        date: '2025-04-28',
+        lastMessage: 'ポートフォリオを拝見しました。',
+        time: '2日前'
+    }
 ];
 
 const MOCK_MESSAGES = [
     { id: 1, sender: 'company', text: 'ご応募ありがとうございます。書類選考を通過されましたので、ぜひ一度カジュアル面談をお願いできればと思います。', time: '10:00' },
     { id: 2, sender: 'me', text: 'ありがとうございます！ぜひよろしくお願いいたします。来週の水曜日以降であればいつでも調整可能です。', time: '10:05' },
     { id: 3, sender: 'company', text: '承知いたしました。では来週水曜日の14時からはいかがでしょうか？', time: '10:10' },
-];
-
-// Mock Applications for Status Board (Status removed from display as requested)
-const MOCK_APPLICATIONS = [
-    {
-        id: 'app1',
-        job: JOB_LISTINGS[0],
-        date: '2024-05-15'
-    },
-    {
-        id: 'app2',
-        job: JOB_LISTINGS[1],
-        date: '2024-05-10'
-    },
-    {
-        id: 'app3',
-        job: JOB_LISTINGS[4],
-        date: '2024-04-28'
-    }
 ];
 
 export const MyPage: React.FC<MyPageProps> = ({ userName, favorites, browsingHistory, onNavigateJobDetail, onNavigateHome, initialTab = 'chat' }) => {
@@ -71,8 +71,18 @@ export const MyPage: React.FC<MyPageProps> = ({ userName, favorites, browsingHis
 
   // Chat View Render Logic
   const renderChat = () => {
+    // Derive chat contacts from applications
+    // This satisfies the requirement: "Chat screen appears at the stage the student applies"
+    const chatContacts = MOCK_APPLICATIONS.map(app => ({
+        id: app.job.company.id,
+        name: app.job.company.name,
+        lastMessage: app.lastMessage,
+        time: app.time,
+        logo: app.job.company.logoUrl
+    }));
+
     if (selectedChatId) {
-        const contact = CHAT_CONTACTS.find(c => c.id === selectedChatId);
+        const contact = chatContacts.find(c => c.id === selectedChatId);
         return (
             <div className="flex flex-col h-[600px] animate-fade-in">
                 {/* Chat Header */}
@@ -82,17 +92,21 @@ export const MyPage: React.FC<MyPageProps> = ({ userName, favorites, browsingHis
                         戻る
                     </button>
                     <div className="h-6 w-px bg-gray-200 mx-2"></div>
-                    <h3 className="font-bold text-gray-900">{contact?.name}</h3>
+                    <div className="flex items-center gap-3">
+                        <img src={contact?.logo} className="w-8 h-8 rounded-full border border-gray-200" alt=""/>
+                        <h3 className="font-bold text-gray-900">{contact?.name}</h3>
+                    </div>
                 </div>
                 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+                <div className="flex-1 overflow-y-auto space-y-4 pr-2 p-2 bg-gray-50/50 rounded-sm">
                     {MOCK_MESSAGES.map(msg => (
                         <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[70%] p-3 rounded-lg text-sm font-medium ${
+                            {msg.sender === 'company' && <div className="w-8 h-8 bg-gray-200 rounded-full mr-2 flex-shrink-0"></div>}
+                            <div className={`max-w-[70%] p-4 rounded-2xl text-sm font-medium shadow-sm leading-relaxed ${
                                 msg.sender === 'me' 
-                                ? 'bg-blue-600 text-white rounded-br-none' 
-                                : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                                ? 'bg-black text-white rounded-tr-none' 
+                                : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'
                             }`}>
                                 {msg.text}
                             </div>
@@ -107,9 +121,9 @@ export const MyPage: React.FC<MyPageProps> = ({ userName, favorites, browsingHis
                         value={chatInput}
                         onChange={(e) => setChatInput(e.target.value)}
                         placeholder="メッセージを入力..."
-                        className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-500"
+                        className="flex-1 bg-gray-100 border border-transparent rounded-full px-6 py-3 text-sm focus:outline-none focus:bg-white focus:border-gray-300 transition-colors font-medium"
                     />
-                    <button className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+                    <button className="bg-black text-white p-3 rounded-full hover:bg-gray-800 shadow-md transition-transform hover:scale-105">
                         <Send size={18} />
                     </button>
                 </div>
@@ -123,22 +137,27 @@ export const MyPage: React.FC<MyPageProps> = ({ userName, favorites, browsingHis
                 <MessageSquare size={24}/> メッセージ
             </h3>
             <div className="space-y-2">
-                {CHAT_CONTACTS.map(contact => (
+                {chatContacts.length > 0 ? chatContacts.map(contact => (
                     <div 
                         key={contact.id} 
                         onClick={() => setSelectedChatId(contact.id)}
-                        className="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors rounded-sm"
+                        className="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors rounded-sm group"
                     >
-                        {/* Removed Logo/Icon */}
+                        <img src={contact.logo} className="w-12 h-12 rounded-full border border-gray-200 bg-white object-contain p-1 group-hover:border-black transition-colors" alt=""/>
                         <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-center mb-1">
-                                <h4 className="font-bold text-sm text-gray-900 truncate">{contact.name}</h4>
+                                <h4 className="font-bold text-sm text-gray-900 truncate group-hover:text-blue-600 transition-colors">{contact.name}</h4>
                                 <span className="text-[10px] text-gray-400 font-bold whitespace-nowrap">{contact.time}</span>
                             </div>
                             <p className="text-xs text-gray-500 truncate font-medium">{contact.lastMessage}</p>
                         </div>
                     </div>
-                ))}
+                )) : (
+                    <div className="text-center py-20 text-gray-400 font-bold text-sm">
+                        まだメッセージはありません。<br/>
+                        気になる企業に応募してみましょう！
+                    </div>
+                )}
             </div>
         </div>
     );

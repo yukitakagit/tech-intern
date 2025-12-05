@@ -6,7 +6,11 @@ interface StaticPageProps {
   onBack: () => void;
 }
 
-export const CompanyProfilePage: React.FC<StaticPageProps> = ({ onBack }) => {
+interface CompanyProfileProps extends StaticPageProps {
+    onNavigateTokusho: () => void;
+}
+
+export const CompanyProfilePage: React.FC<CompanyProfileProps> = ({ onBack, onNavigateTokusho }) => {
   return (
     <div className="min-h-screen bg-white pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -54,10 +58,92 @@ export const CompanyProfilePage: React.FC<StaticPageProps> = ({ onBack }) => {
               </a>
             </div>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-b border-gray-100">
+            <h3 className="font-bold text-gray-900 text-sm">法務情報</h3>
+            <div className="md:col-span-2">
+                <button onClick={onNavigateTokusho} className="text-blue-600 font-bold hover:underline flex items-center gap-1">
+                    特定商取引法に基づく表記 <ExternalLink size={14}/>
+                </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
+};
+
+export const TokushoPage: React.FC<StaticPageProps> = ({ onBack }) => {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-sm shadow-sm border border-gray-200">
+          <button onClick={onBack} className="flex items-center text-gray-500 hover:text-black mb-8 font-bold text-sm">
+              <ArrowLeft size={16} className="mr-1"/> HOMEに戻る
+          </button>
+          
+          <h1 className="text-2xl font-black text-gray-900 mb-8 border-b border-gray-200 pb-4">特定商取引法に基づく表記</h1>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left text-gray-600 border-collapse border border-gray-200">
+              <tbody>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 w-1/3 border-r border-gray-200">販売事業者</th>
+                  <td className="py-4 px-6">KAXIN株式会社</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">代表責任者</th>
+                  <td className="py-4 px-6">藤巻雄飛</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">所在地</th>
+                  <td className="py-4 px-6">千葉県流山市東深井451-54-107</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">電話番号</th>
+                  <td className="py-4 px-6">080-1164-2914</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">メールアドレス</th>
+                  <td className="py-4 px-6">contact.kaxin@gmail.com</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">サービス名</th>
+                  <td className="py-4 px-6">エンジニア向けインターンプラットフォーム「Tech intern」</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">販売価格</th>
+                  <td className="py-4 px-6">掲載プラン・オプション等に応じて異なります。<br/>料金は各申し込みページに記載します。</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">商品代金以外の必要料金</th>
+                  <td className="py-4 px-6">インターネット接続に伴う通信費（ユーザー負担）</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">支払方法</th>
+                  <td className="py-4 px-6">クレジットカード決済<br/>銀行振込</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">支払時期</th>
+                  <td className="py-4 px-6">申し込み時に表示される支払い条件に従います。</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">役務の提供時期</th>
+                  <td className="py-4 px-6">申込完了後、即時または当社が指定する日時から利用可能になります。</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">キャンセル・返金について</th>
+                  <td className="py-4 px-6">サービスの性質上、掲載後の返金はお受けしておりません。<br/>ただし、システム障害等によりサービス提供が困難な場合は別途協議の上対応します。</td>
+                </tr>
+                <tr>
+                  <th className="py-4 px-6 font-bold text-gray-900 bg-gray-50 border-r border-gray-200">免責事項</th>
+                  <td className="py-4 px-6">当社は掲載情報の正確性・信頼性について保証いたしません。<br/>本サービスの利用により発生した損害について、当社は一切責任を負いません。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
 };
 
 export const TermsPage: React.FC<StaticPageProps> = ({ onBack }) => {

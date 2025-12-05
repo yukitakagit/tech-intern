@@ -5,17 +5,21 @@ interface FooterProps {
   onNavigateHome: () => void;
   onNavigateTerms: () => void;
   onNavigatePrivacy: () => void;
+  onNavigateTokusho: () => void; // Added
   onNavigateCompanyProfile: () => void;
   onNavigateCompanyLP: () => void;
+  onNavigateCompanyLogin: () => void;
   onNavigateCompanyList: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
   onNavigateHome, 
   onNavigateTerms, 
-  onNavigatePrivacy, 
+  onNavigatePrivacy,
+  onNavigateTokusho, 
   onNavigateCompanyProfile,
   onNavigateCompanyLP,
+  onNavigateCompanyLogin,
   onNavigateCompanyList
 }) => {
   return (
@@ -49,6 +53,11 @@ export const Footer: React.FC<FooterProps> = ({
                              長期インターン採用を検討中の企業様
                           </button>
                       </li>
+                      <li>
+                          <button onClick={onNavigateCompanyLogin} className="hover:text-black transition-colors text-left">
+                             企業担当者様ログイン
+                          </button>
+                      </li>
                   </ul>
               </div>
 
@@ -64,6 +73,11 @@ export const Footer: React.FC<FooterProps> = ({
                       <li>
                         <button onClick={onNavigatePrivacy} className="hover:text-black transition-colors text-left">
                             プライバシーポリシー
+                        </button>
+                      </li>
+                      <li>
+                        <button onClick={onNavigateTokusho} className="hover:text-black transition-colors text-left">
+                            特定商取引法に基づく表記
                         </button>
                       </li>
                   </ul>
@@ -92,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <span className="font-black text-xl text-gray-900 tracking-tighter">Tech intern</span>
                   <span className="text-[10px] text-gray-400">ENGINEER INTERNSHIP PLATFORM</span>
               </div>
-              <p className="text-xs text-gray-400 font-medium">© 2024 KAXIN Inc. All rights reserved.</p>
+              <p className="text-xs text-gray-400 font-medium">© KAXIN Inc. All rights reserved.</p>
           </div>
       </div>
     </footer>

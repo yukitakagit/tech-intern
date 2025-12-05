@@ -1,10 +1,17 @@
-import React from 'react';
+
+import React, { useMemo } from 'react';
 import { JOB_LISTINGS } from '../constants';
 
 export const HeroCarousel: React.FC = () => {
   // Use job listings to create "cards" in the carousel
   // Duplicate to create seamless loop
-  const displayItems = [...JOB_LISTINGS, ...JOB_LISTINGS];
+  
+  // Randomize the jobs on mount
+  const randomizedJobs = useMemo(() => {
+      return [...JOB_LISTINGS].sort(() => 0.5 - Math.random());
+  }, []);
+
+  const displayItems = [...randomizedJobs, ...randomizedJobs];
 
   return (
     <div className="relative w-full h-[450px] bg-gray-100 overflow-hidden flex items-center">

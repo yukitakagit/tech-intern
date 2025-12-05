@@ -1,4 +1,19 @@
-import { JobListing, Article } from './types';
+
+import { JobListing, Article, UserProfile } from './types';
+
+export const INITIAL_USER_PROFILE: UserProfile = {
+  name: '田中 太郎',
+  gender: 'male',
+  phone: '090-1234-5678',
+  university: '東京工科大学',
+  faculty: '工学部',
+  department: '情報工学科',
+  graduationYear: '2026',
+  email: 'tanaka@example.com',
+  address: '東京都八王子市...',
+  githubUrl: 'https://github.com/tanakataro',
+  skills: 'React, TypeScript, Go',
+};
 
 export const JOB_LISTINGS: JobListing[] = [
   {
@@ -231,7 +246,7 @@ export const ARTICLES: Article[] = [
   {
     id: 1,
     title: '未経験からAIエンジニアへ。長期インターンで学ぶべきこととは？',
-    date: '2024.04.12',
+    date: '2025.04.12',
     category: 'CAREER',
     image: 'https://picsum.photos/id/101/600/400',
     content: `
@@ -254,7 +269,7 @@ export const ARTICLES: Article[] = [
   {
     id: 2,
     title: '【25卒・26卒】メガベンチャー内定者が語る、Githubプロフィールの作り方',
-    date: '2024.04.10',
+    date: '2025.04.10',
     category: 'SKILL',
     image: 'https://picsum.photos/id/180/600/400',
     content: `
@@ -266,7 +281,7 @@ export const ARTICLES: Article[] = [
       <ul>
         <li><strong>デモGifを載せる：</strong> 動いている様子が一目でわかるようにしましょう。</li>
         <li><strong>技術選定の理由を書く：</strong> なぜReactを選んだのか？なぜGoなのか？その思考プロセスが評価されます。</li>
-        <li><strong>苦労した点と解決策：</strong> 開発中に直面したバグや課題をどう乗り越えたか、ストーリーとして記述します。</li>
+        <li><strong>苦労した点と解決策：</strong> なぜReactを選んだのか？なぜGoなのか？その思考プロセスが評価されます。</li>
       </ul>
 
       <p>日々の積み重ねが、あなたの技術力を証明する最強の武器になります。今日から少しずつプロフィールを充実させていきましょう。</p>
@@ -275,7 +290,7 @@ export const ARTICLES: Article[] = [
   {
     id: 3,
     title: 'リモートインターンのリアル。コミュニケーションの課題と解決策',
-    date: '2024.04.05',
+    date: '2025.04.05',
     category: 'WORK STYLE',
     image: 'https://picsum.photos/id/1/600/400',
     content: `
@@ -293,7 +308,7 @@ export const ARTICLES: Article[] = [
   {
     id: 4,
     title: 'Go言語の需要が急上昇中？バックエンドエンジニアのキャリア戦略',
-    date: '2024.04.01',
+    date: '2025.04.01',
     category: 'TREND',
     image: 'https://picsum.photos/id/20/600/400',
     content: `

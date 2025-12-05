@@ -34,6 +34,9 @@ export interface JobListing {
   businessContent?: string;
   jobDetail?: string;
   skillsGained?: string[];
+  skillsGainedDescription?: string; // New
+  corporateCulture?: string; // New
+  onboardingProcess?: string; // New
   selectionFlow?: { step: number; title: string; description: string }[];
 }
 
@@ -78,9 +81,11 @@ export interface UserProfile {
 
 export type AppRoute = 
   | { name: 'HOME' }
+  | { name: 'ALL_JOBS' }
   | { name: 'JOB_DETAIL'; id: string }
   | { name: 'COMPANY_DETAIL'; id: string; fromJobId?: string }
   | { name: 'COMPANY_LIST' }
+  | { name: 'ARTICLE_LIST' }
   | { name: 'ARTICLE_DETAIL'; id: number }
   | { name: 'LOGIN' }
   | { name: 'REGISTER' }
@@ -89,6 +94,7 @@ export type AppRoute =
   | { name: 'COMPANY_PROFILE' }
   | { name: 'TERMS' }
   | { name: 'PRIVACY' }
+  | { name: 'TOKUSHO' } // Added
   // Company Side Routes
   | { name: 'COMPANY_LP' }
   | { name: 'COMPANY_LOGIN' }

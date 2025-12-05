@@ -4,6 +4,7 @@ import { Search, UserCheck, MessageSquare, Rocket } from 'lucide-react';
 
 interface FlowSectionProps {
     onNavigateRegister: () => void;
+    isLoggedIn: boolean;
 }
 
 const STEPS = [
@@ -33,7 +34,7 @@ const STEPS = [
   },
 ];
 
-export const FlowSection: React.FC<FlowSectionProps> = ({ onNavigateRegister }) => {
+export const FlowSection: React.FC<FlowSectionProps> = ({ onNavigateRegister, isLoggedIn }) => {
   return (
     <section className="py-20 border-t border-gray-200 bg-white relative">
       {/* Background Decor */}
@@ -69,14 +70,16 @@ export const FlowSection: React.FC<FlowSectionProps> = ({ onNavigateRegister }) 
           ))}
         </div>
 
-        <div className="mt-16 text-center">
-          <button 
-            onClick={onNavigateRegister}
-            className="bg-black text-white text-sm font-bold px-8 py-4 rounded-sm hover:bg-gray-800 transition-colors shadow-lg"
-          >
-             会員登録してスタートする
-          </button>
-        </div>
+        {!isLoggedIn && (
+          <div className="mt-16 text-center">
+            <button 
+              onClick={onNavigateRegister}
+              className="bg-black text-white text-sm font-bold px-8 py-4 rounded-sm hover:bg-gray-800 transition-colors shadow-lg"
+            >
+               会員登録してスタートする
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

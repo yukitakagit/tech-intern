@@ -12,23 +12,26 @@ import { JobDetailPage } from './components/JobDetailPage';
 import { CompanyPage } from './components/CompanyPage';
 import { CompanyListPage } from './components/CompanyListPage'; 
 import { ArticlePage } from './components/ArticlePage';
+import { ArticleListPage } from './components/ArticleListPage';
+import { AllJobsPage } from './components/AllJobsPage';
 import { LoginPage, RegisterPage } from './components/AuthPages';
 import { MyPage } from './components/MyPage';
 import { ApplicationPage } from './components/ApplicationPage';
 import { SEO } from './components/SEO';
 import { Footer } from './components/Footer';
-import { CompanyProfilePage, TermsPage, PrivacyPage } from './components/StaticPages';
+import { CompanyProfilePage, TermsPage, PrivacyPage, TokushoPage } from './components/StaticPages';
 import { CompanyLP } from './components/CompanySide/CompanyLP';
 import { CompanyLogin, CompanyRegister } from './components/CompanySide/CompanyAuth';
 import { CompanyDashboard } from './components/CompanySide/CompanyDashboard';
 import { AdminDashboard } from './components/AdminDashboard'; 
-import { JOB_LISTINGS, ARTICLES } from './constants';
-import { JobListing, FilterState, AppRoute, Article, FAQ } from './types';
-import { Search, LogOut } from 'lucide-react';
+import { JOB_LISTINGS, ARTICLES, INITIAL_USER_PROFILE } from './constants';
+import { JobListing, FilterState, AppRoute, Article, FAQ, UserProfile } from './types';
+import { Search, LogOut, ArrowRight, Instagram } from 'lucide-react';
 
 const App: React.FC = () => {
   const [route, setRoute] = useState<AppRoute>({ name: 'HOME' });
   const [user, setUser] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile>(INITIAL_USER_PROFILE); // Managed User Profile
   const [companyUser, setCompanyUser] = useState<string | null>(null); 
   const [adminUser, setAdminUser] = useState<boolean>(false); // Admin State
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -56,7 +59,7 @@ const App: React.FC = () => {
     characteristics: []
   });
 
-  // Filter Logic (Same as before)
+  // Filter Logic
   const filteredJobs = useMemo(() => {
     return JOB_LISTINGS.filter(job => {
         if (job.status === 'draft') return false;
@@ -117,6 +120,7 @@ const App: React.FC = () => {
 
   // Navigation Handlers
   const navigateHome = () => setRoute({ name: 'HOME' });
+  const navigateAllJobs = () => setRoute({ name: 'ALL_JOBS' });
   const navigateJobDetail = (id: string) => {
       setBrowsingHistory(prev => {
           const newHistory = prev.filter(hid => hid !== id);
@@ -127,14 +131,24 @@ const App: React.FC = () => {
   const navigateCompany = (id: string, fromJobId?: string) => setRoute({ name: 'COMPANY_DETAIL', id, fromJobId });
   const navigateCompanyList = () => setRoute({ name: 'COMPANY_LIST' });
   const navigateArticle = (id: number) => setRoute({ name: 'ARTICLE_DETAIL', id });
+  const navigateArticleList = () => setRoute({ name: 'ARTICLE_LIST' });
   const navigateLogin = () => setRoute({ name: 'LOGIN' });
   const navigateRegister = () => setRoute({ name: 'REGISTER' });
   const navigateMyPage = (tab?: 'profile' | 'chat' | 'history' | 'status' | 'password') => setRoute({ name: 'MYPAGE', tab });
-  const navigateApply = (jobId: string) => setRoute({ name: 'APPLICATION', jobId });
+  
+  const navigateApply = (jobId: string) => {
+      if (!user) {
+          alert("応募するには会員登録（またはログイン）が必要です。");
+          navigateRegister();
+          return;
+      }
+      setRoute({ name: 'APPLICATION', jobId });
+  };
   
   const navigateCompanyProfile = () => setRoute({ name: 'COMPANY_PROFILE' });
   const navigateTerms = () => setRoute({ name: 'TERMS' });
   const navigatePrivacy = () => setRoute({ name: 'PRIVACY' });
+  const navigateTokusho = () => setRoute({ name: 'TOKUSHO' });
 
   const navigateCompanyLP = () => setRoute({ name: 'COMPANY_LP' });
   const navigateCompanyLogin = () => setRoute({ name: 'COMPANY_LOGIN' });
@@ -232,24 +246,26 @@ const App: React.FC = () => {
                 setSearchQuery={setSearchQuery}
                 filters={filters}
                 setFilters={setFilters}
+                hideSearch={true} // Hide Sidebar Search on Home
             />
 
             <div className="flex-1">
-              {/* Mobile Search */}
-              <div className="lg:hidden mb-8 flex gap-3">
-                  <div className="relative flex-1">
-                      <input 
-                      type="text" 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="キーワード検索" 
-                      className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm text-sm shadow-sm focus:border-black focus:ring-0 outline-none"
-                      />
-                      <Search className="absolute left-3 top-3.5 text-gray-400" size={18} />
+              {/* Big Search Bar - Moved Here */}
+              <div className="mb-10 text-center md:text-left opacity-0 animate-fade-in-up [animation-delay:100ms] forwards">
+                  <div className="relative max-w-2xl mx-auto md:mx-0 group mb-8">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                        <div className="relative">
+                            <input 
+                                type="text" 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="興味のあるキーワード、言語を入力..." 
+                                className="w-full pl-12 pr-4 py-5 bg-white border border-gray-200 rounded-md text-lg shadow-lg focus:border-black focus:ring-0 outline-none transition-all placeholder-gray-400 font-medium"
+                            />
+                            <Search className="absolute left-4 top-5 text-gray-400 group-focus-within:text-black transition-colors" size={24} />
+                        </div>
                   </div>
-              </div>
 
-              <div className="mb-10 text-center md:text-left opacity-0 animate-fade-in-up [animation-delay:200ms] forwards">
                   <h2 className="text-2xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-500 leading-tight">
                       エンジニアとして経験を積みたいなら<br className="md:hidden"/> Tech intern
                   </h2>
@@ -262,23 +278,40 @@ const App: React.FC = () => {
                       {filters.occupations.length > 0 || filters.languages.length > 0 ? '検索結果' : '新着のインターンシップ'}
                   </p>
                   </div>
-                  <span className="text-sm font-medium text-gray-500">
-                      <span className="text-black font-black text-xl">{filteredJobs.length}</span> results
-                  </span>
+                  {/* Link to All Jobs */}
+                  <button 
+                    onClick={navigateAllJobs}
+                    className="hidden md:flex items-center gap-1 text-sm font-bold border-b border-black pb-0.5 hover:opacity-70 transition-opacity"
+                  >
+                    募集職種一覧を見る <ArrowRight size={14} />
+                  </button>
               </div>
 
               {filteredJobs.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {filteredJobs.map((job, index) => (
-                    <div 
-                        key={job.id} 
-                        onClick={() => navigateJobDetail(job.id)} 
-                        className="cursor-pointer opacity-0 animate-fade-in-up forwards"
-                        style={{ animationDelay: `${400 + index * 50}ms` }}
-                    >
-                        <JobCard job={job} />
-                    </div>
-                    ))}
+                    {/* Show only first 6 for New Arrivals if no filter active, else show all filtered */}
+                    {(searchQuery || filters.occupations.length > 0 || filters.languages.length > 0) 
+                        ? filteredJobs.map((job, index) => (
+                            <div 
+                                key={job.id} 
+                                onClick={() => navigateJobDetail(job.id)} 
+                                className="cursor-pointer opacity-0 animate-fade-in-up forwards"
+                                style={{ animationDelay: `${400 + index * 50}ms` }}
+                            >
+                                <JobCard job={job} />
+                            </div>
+                        ))
+                        : filteredJobs.slice(0, 6).map((job, index) => (
+                            <div 
+                                key={job.id} 
+                                onClick={() => navigateJobDetail(job.id)} 
+                                className="cursor-pointer opacity-0 animate-fade-in-up forwards"
+                                style={{ animationDelay: `${400 + index * 50}ms` }}
+                            >
+                                <JobCard job={job} />
+                            </div>
+                        ))
+                    }
                 </div>
               ) : (
                 <div className="text-center py-20 bg-white rounded-sm border border-gray-200">
@@ -289,25 +322,55 @@ const App: React.FC = () => {
                 </div>
               )}
               
+              <div className="mt-12 text-center md:hidden">
+                 <button 
+                  onClick={navigateAllJobs} 
+                  className="inline-flex items-center gap-2 text-sm font-bold border border-gray-300 px-6 py-3 rounded-sm hover:bg-black hover:text-white transition-colors"
+                >
+                  募集職種一覧を見る <ArrowRight size={14} />
+                </button>
+              </div>
+              
               {/* Company Section */}
-              <div className="opacity-0 animate-fade-in-up [animation-delay:600ms] forwards">
+              <div className="mt-20">
                   <CompanySection onNavigateCompanyList={navigateCompanyList} onNavigateCompanyDetail={navigateCompany} />
               </div>
 
-              {/* Column Section - Using Dynamic Articles */}
-              <div className="opacity-0 animate-fade-in-up [animation-delay:700ms] forwards">
-                  <ColumnSection articles={articles} onNavigateArticle={navigateArticle} />
+              {/* Column Section */}
+              <div className="mt-8">
+                  <ColumnSection articles={articles} onNavigateArticle={navigateArticle} onNavigateArticleList={navigateArticleList} />
               </div>
             </div>
           </div>
         </div>
 
         <div className="opacity-0 animate-fade-in-up [animation-delay:800ms] forwards">
-            <FlowSection onNavigateRegister={navigateRegister} />
+            <FlowSection onNavigateRegister={navigateRegister} isLoggedIn={!!user} />
         </div>
         <div className="opacity-0 animate-fade-in-up [animation-delay:900ms] forwards">
             <FaqSection faqs={faqs} />
         </div>
+
+        {/* Social Media Section - Added */}
+        <section className="py-24 bg-white border-t border-gray-200 opacity-0 animate-fade-in-up [animation-delay:1000ms] forwards">
+            <div className="max-w-7xl mx-auto px-6 text-center">
+                <h2 className="text-3xl font-black text-gray-900 mb-10 tracking-tight uppercase">FOLLOW US</h2>
+                <div className="flex justify-center gap-8">
+                    <a href="https://twitter.com" target="_blank" rel="noreferrer" className="group flex flex-col items-center">
+                        <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        </div>
+                        <span className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">X (Twitter)</span>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noreferrer" className="group flex flex-col items-center">
+                        <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                            <Instagram size={32} />
+                        </div>
+                        <span className="text-sm font-bold text-gray-900 group-hover:text-pink-600 transition-colors">Instagram</span>
+                    </a>
+                </div>
+            </div>
+        </section>
       </div>
     </>
   );
@@ -410,7 +473,13 @@ const App: React.FC = () => {
               {route.name === 'COMPANY_LP' && (
                   <>
                     <SEO title="企業様向け" />
-                    <CompanyLP onNavigateLogin={navigateCompanyLogin} onNavigateRegister={navigateCompanyRegister} />
+                    <CompanyLP 
+                      onNavigateLogin={navigateCompanyLogin} 
+                      onNavigateRegister={navigateCompanyRegister} 
+                      onNavigateTerms={navigateTerms}
+                      onNavigatePrivacy={navigatePrivacy}
+                      onNavigateTokusho={navigateTokusho}
+                    />
                   </>
               )}
               {route.name === 'COMPANY_LOGIN' && (
@@ -458,6 +527,25 @@ const App: React.FC = () => {
                 <CompanyListPage onBack={navigateHome} onNavigateCompanyDetail={navigateCompany} />
             </div>
         )}
+        {route.name === 'ALL_JOBS' && (
+            <div className="animate-fade-in-up">
+                <AllJobsPage 
+                    jobs={filteredJobs} 
+                    onNavigateJobDetail={navigateJobDetail} 
+                    onNavigateHome={navigateHome} 
+                    onNavigateProfile={() => user ? navigateMyPage('profile') : navigateLogin()}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    filters={filters}
+                    setFilters={setFilters}
+                />
+            </div>
+        )}
+        {route.name === 'ARTICLE_LIST' && (
+            <div className="animate-fade-in-up">
+                <ArticleListPage articles={articles} onNavigateArticle={navigateArticle} onBack={navigateHome} />
+            </div>
+        )}
         {route.name === 'ARTICLE_DETAIL' && (
             <div className="animate-fade-in-up">
                 <ArticlePage article={articles.find(a => a.id === (route as any).id)!} onBack={navigateHome} />
@@ -465,7 +553,12 @@ const App: React.FC = () => {
         )}
         {route.name === 'APPLICATION' && (
             <div className="animate-fade-in-up">
-                <ApplicationPage job={JOB_LISTINGS.find(j => j.id === (route as any).jobId)!} onBack={() => navigateJobDetail((route as any).jobId)} onSubmit={() => { alert('応募完了'); navigateMyPage('status'); }} />
+                <ApplicationPage 
+                    job={JOB_LISTINGS.find(j => j.id === (route as any).jobId)!} 
+                    onBack={() => navigateJobDetail((route as any).jobId)} 
+                    onSubmit={() => { alert('応募完了'); navigateMyPage('status'); }} 
+                    initialData={user ? userProfile : null}
+                />
             </div>
         )}
         {route.name === 'LOGIN' && (
@@ -480,17 +573,20 @@ const App: React.FC = () => {
         )}
         {route.name === 'MYPAGE' && renderMyPage()}
         
-        {route.name === 'COMPANY_PROFILE' && <CompanyProfilePage onBack={navigateHome} />}
+        {route.name === 'COMPANY_PROFILE' && <CompanyProfilePage onBack={navigateHome} onNavigateTokusho={navigateTokusho} />}
         {route.name === 'TERMS' && <TermsPage onBack={navigateHome} />}
         {route.name === 'PRIVACY' && <PrivacyPage onBack={navigateHome} />}
+        {route.name === 'TOKUSHO' && <TokushoPage onBack={navigateHome} />}
       </main>
 
       <Footer 
         onNavigateHome={navigateHome}
         onNavigateTerms={navigateTerms}
         onNavigatePrivacy={navigatePrivacy}
+        onNavigateTokusho={navigateTokusho}
         onNavigateCompanyProfile={navigateCompanyProfile}
         onNavigateCompanyLP={navigateCompanyLP}
+        onNavigateCompanyLogin={navigateCompanyLogin}
         onNavigateCompanyList={navigateCompanyList}
       />
     </div>
