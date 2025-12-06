@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Users, Building2, LogOut, Search, LogIn, FileText, HelpCircle, Settings, Plus, Edit2, Trash2, Lock, Mail, ArrowLeft, Send, Save, Eye, X, Upload, Bold, Italic, List, Type, Image as ImageIcon } from 'lucide-react';
 import { JOB_LISTINGS } from '../constants';
 import { Article, FAQ } from '../types';
@@ -15,6 +15,131 @@ interface AdminDashboardProps {
   faqs: FAQ[];
   setFaqs: React.Dispatch<React.SetStateAction<FAQ[]>>;
 }
+
+// --- Rich Text Editor (Fixed Image Insertion) ---
+const RichTextEditor = ({ 
+    label, 
+    value, 
+    onChange 
+}: { 
+    label: string, 
+    value: string, 
+    onChange: (html: string) => void 
+}) => {
+    const editorRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const savedRange = useRef<Range | null>(null); // Store cursor position
+    const isFocused = useRef(false);
+
+    useEffect(() => {
+        if (editorRef.current && !isFocused.current) {
+            if (editorRef.current.innerHTML !== value) {
+                editorRef.current.innerHTML = value;
+            }
+        }
+    }, [value]);
+
+    const handleInput = () => {
+        if (editorRef.current) {
+            onChange(editorRef.current.innerHTML);
+        }
+    };
+
+    const saveSelection = () => {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const range = sel.getRangeAt(0);
+            // Ensure the selection is actually inside the editor
+            if (editorRef.current && editorRef.current.contains(range.commonAncestorContainer)) {
+                savedRange.current = range;
+            }
+        }
+    };
+
+    const execCmd = (command: string, value?: string) => {
+        // Restore selection if saved
+        if (savedRange.current && editorRef.current) {
+            const sel = window.getSelection();
+            sel?.removeAllRanges();
+            sel?.addRange(savedRange.current);
+        }
+        
+        document.execCommand(command, false, value);
+        
+        if (editorRef.current) {
+            editorRef.current.focus();
+            saveSelection();
+        }
+        handleInput();
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const imgTag = `<img src="${reader.result}" alt="inserted" style="max-width:100%; border-radius: 4px; margin: 10px 0;" /><br/>`;
+                
+                if (editorRef.current) {
+                    editorRef.current.focus();
+                    
+                    // Restore range if it exists inside the editor
+                    if (savedRange.current) {
+                        const sel = window.getSelection();
+                        sel?.removeAllRanges();
+                        sel?.addRange(savedRange.current);
+                    }
+                    
+                    document.execCommand('insertHTML', false, imgTag);
+                    handleInput();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    return (
+        <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{label}</label>
+            <div className="border border-gray-300 rounded-sm overflow-hidden bg-white">
+                <div className="flex gap-1 p-2 border-b border-gray-200 bg-gray-50 items-center select-none">
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('bold')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="太字"><Bold size={16}/></button>
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('italic')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="斜体"><Italic size={16}/></button>
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('formatBlock', 'H3')} className="p-2 hover:bg-gray-200 rounded text-gray-700 font-bold text-xs" title="見出し">H3</button>
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('insertUnorderedList')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="リスト"><List size={16}/></button>
+                    <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    <label className="p-2 hover:bg-gray-200 rounded text-gray-700 cursor-pointer flex items-center gap-1" title="画像挿入">
+                        <ImageIcon size={16}/>
+                        <input 
+                            ref={fileInputRef}
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={handleImageUpload}
+                        />
+                    </label>
+                </div>
+                <div 
+                    ref={editorRef}
+                    className="p-4 min-h-[400px] outline-none prose prose-sm max-w-none font-medium text-gray-800 focus:bg-gray-50/30 transition-colors"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onInput={handleInput}
+                    onFocus={() => isFocused.current = true}
+                    onBlur={() => { 
+                        isFocused.current = false; 
+                        saveSelection(); 
+                        handleInput();
+                    }}
+                    onKeyUp={saveSelection}
+                    onMouseUp={saveSelection}
+                />
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1 text-right">※ 画像を選択してBackspaceキーで削除できます</p>
+        </div>
+    );
+};
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
     onLogout, 
@@ -81,11 +206,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           };
           reader.readAsDataURL(file);
       }
-  };
-
-  // Simple Rich Text Editor Logic
-  const execCmd = (command: string, value?: string) => {
-      document.execCommand(command, false, value);
   };
 
   const handleSaveArticle = (status: 'published' | 'draft') => {
@@ -283,31 +403,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
 
                       {/* Rich Text Editor */}
-                      <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">本文</label>
-                          <div className="border border-gray-300 rounded-sm overflow-hidden bg-white">
-                              {/* Toolbar */}
-                              <div className="flex gap-1 p-2 border-b border-gray-200 bg-gray-50">
-                                  <button onClick={() => execCmd('bold')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="太字"><Bold size={16}/></button>
-                                  <button onClick={() => execCmd('italic')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="斜体"><Italic size={16}/></button>
-                                  <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
-                                  <button onClick={() => execCmd('formatBlock', 'H2')} className="p-2 hover:bg-gray-200 rounded text-gray-700 font-bold text-sm" title="見出し2">H2</button>
-                                  <button onClick={() => execCmd('formatBlock', 'H3')} className="p-2 hover:bg-gray-200 rounded text-gray-700 font-bold text-sm" title="見出し3">H3</button>
-                                  <button onClick={() => execCmd('formatBlock', 'P')} className="p-2 hover:bg-gray-200 rounded text-gray-700 font-bold text-sm" title="標準">P</button>
-                                  <div className="w-px h-6 bg-gray-300 mx-1 self-center"></div>
-                                  <button onClick={() => execCmd('insertUnorderedList')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="リスト"><List size={16}/></button>
-                              </div>
-                              
-                              {/* Editable Area */}
-                              <div 
-                                className="p-4 min-h-[400px] outline-none prose prose-sm max-w-none font-medium text-gray-800"
-                                contentEditable
-                                suppressContentEditableWarning
-                                onInput={(e) => setEditingArticleData({...editingArticleData, content: e.currentTarget.innerHTML})}
-                                dangerouslySetInnerHTML={{ __html: editingArticleData.content || '' }}
-                              />
-                          </div>
-                      </div>
+                      <RichTextEditor 
+                        label="本文 (画像挿入可)" 
+                        value={editingArticleData.content || ''} 
+                        onChange={(html) => setEditingArticleData({...editingArticleData!, content: html})} 
+                      />
                   </div>
               </div>
           );

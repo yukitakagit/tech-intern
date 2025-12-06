@@ -21,7 +21,7 @@ type DashboardTab = 'info' | 'recruitment' | 'candidates' | 'analytics';
 type CandidateStatus = '書類選考' | '面談' | '終了';
 type CandidateResult = 'adopted' | 'rejected' | null; // For '終了' status
 
-// --- Rich Text Editor Component (Fixed Cursor Issue) ---
+// --- Rich Text Editor Component (Fixed Image Insertion) ---
 const RichTextEditor = ({ 
     label, 
     value, 
@@ -33,6 +33,7 @@ const RichTextEditor = ({
 }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const savedRange = useRef<Range | null>(null); // Store cursor position
     const isFocused = useRef(false);
 
     // Initial load and sync only when NOT focused to prevent cursor jumping
@@ -50,20 +51,32 @@ const RichTextEditor = ({
         }
     };
 
-    const handleFocus = () => {
-        isFocused.current = true;
-    };
-
-    const handleBlur = () => {
-        isFocused.current = false;
-        handleInput(); // Ensure final state is saved
+    const saveSelection = () => {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            const range = sel.getRangeAt(0);
+            // Ensure the selection is actually inside the editor
+            if (editorRef.current && editorRef.current.contains(range.commonAncestorContainer)) {
+                savedRange.current = range;
+            }
+        }
     };
 
     const execCmd = (command: string, value?: string) => {
+        // Restore selection if saved
+        if (savedRange.current && editorRef.current) {
+            const sel = window.getSelection();
+            sel?.removeAllRanges();
+            sel?.addRange(savedRange.current);
+        }
+        
         document.execCommand(command, false, value);
+        
         if (editorRef.current) {
             editorRef.current.focus();
+            saveSelection(); // Save new position
         }
+        handleInput();
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,14 +86,19 @@ const RichTextEditor = ({
             reader.onloadend = () => {
                 const imgTag = `<img src="${reader.result}" alt="inserted" style="max-width:100%; border-radius: 4px; margin: 10px 0;" /><br/>`;
                 
-                if (document.activeElement === editorRef.current) {
-                    document.execCommand('insertHTML', false, imgTag);
-                } else {
-                    if (editorRef.current) {
-                        editorRef.current.innerHTML += imgTag;
+                if (editorRef.current) {
+                    editorRef.current.focus();
+                    
+                    // Restore range if it exists inside the editor
+                    if (savedRange.current) {
+                        const sel = window.getSelection();
+                        sel?.removeAllRanges();
+                        sel?.addRange(savedRange.current);
                     }
+                    
+                    document.execCommand('insertHTML', false, imgTag);
+                    handleInput();
                 }
-                handleInput();
             };
             reader.readAsDataURL(file);
         }
@@ -92,9 +110,10 @@ const RichTextEditor = ({
             <label className="block text-xs font-bold text-gray-500 uppercase mb-2">{label}</label>
             <div className="border border-gray-300 rounded-sm overflow-hidden bg-white">
                 <div className="flex gap-1 p-2 border-b border-gray-200 bg-gray-50 items-center select-none">
-                    <button onClick={(e) => {e.preventDefault(); execCmd('bold');}} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="太字"><Bold size={16}/></button>
-                    <button onClick={(e) => {e.preventDefault(); execCmd('italic');}} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="斜体"><Italic size={16}/></button>
-                    <button onClick={(e) => {e.preventDefault(); execCmd('insertUnorderedList');}} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="リスト"><List size={16}/></button>
+                    {/* Use onMouseDown preventDefault to keep focus in editor when clicking toolbar */}
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('bold')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="太字"><Bold size={16}/></button>
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('italic')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="斜体"><Italic size={16}/></button>
+                    <button onMouseDown={(e) => e.preventDefault()} onClick={() => execCmd('insertUnorderedList')} className="p-2 hover:bg-gray-200 rounded text-gray-700" title="リスト"><List size={16}/></button>
                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
                     <label className="p-2 hover:bg-gray-200 rounded text-gray-700 cursor-pointer flex items-center gap-1" title="画像挿入">
                         <ImageIcon size={16}/>
@@ -113,8 +132,14 @@ const RichTextEditor = ({
                     contentEditable
                     suppressContentEditableWarning
                     onInput={handleInput}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    onFocus={() => isFocused.current = true}
+                    onBlur={() => { 
+                        isFocused.current = false; 
+                        saveSelection(); // Save selection on blur (e.g. clicking file input)
+                        handleInput(); 
+                    }}
+                    onKeyUp={saveSelection} // Save selection as we type
+                    onMouseUp={saveSelection} // Save selection as we click/select
                 />
             </div>
             <p className="text-[10px] text-gray-400 mt-1 text-right">※ 画像を選択してBackspaceキーで削除できます</p>
@@ -830,473 +855,4 @@ export const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ companyName,
             </div>
         </div>
     );
-  };
-
-  const renderAnalytics = () => {
-      const totalApplicants = candidates.length;
-      const screeningCount = candidates.filter(c => c.status === '書類選考').length;
-      const interviewCount = candidates.filter(c => c.status === '面談').length;
-      const finishedCount = candidates.filter(c => c.status === '終了').length;
-
-      return (
-          <div className="p-8 md:p-10 max-w-7xl mx-auto space-y-8 animate-fade-in-up">
-              <div className="flex justify-between items-center">
-                  <div>
-                      <h2 className="text-2xl font-black text-gray-900 tracking-tight">情報管理ダッシュボード</h2>
-                      <p className="text-sm text-gray-500 font-medium">採用状況の一元管理</p>
-                  </div>
-                  <p className="text-sm text-gray-400 font-mono bg-white px-3 py-1 rounded-sm border border-gray-200">{new Date().toLocaleDateString()}</p>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100">
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">総応募者数</div>
-                      <div className="text-4xl font-black text-gray-900">{totalApplicants}</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">書類選考</div>
-                      <div className="text-4xl font-black text-blue-600">{screeningCount}</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100 border-l-4 border-l-orange-500">
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">面談</div>
-                      <div className="text-4xl font-black text-orange-600">{interviewCount}</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100 border-l-4 border-l-gray-500">
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">終了</div>
-                      <div className="text-4xl font-black text-gray-600">{finishedCount}</div>
-                  </div>
-              </div>
-
-              {/* Candidates List Table */}
-              <div className="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
-                  <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="font-bold text-lg text-gray-900">応募者ステータス一覧</h3>
-                      <button onClick={() => setActiveTab('candidates')} className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1">
-                          詳細管理へ <ArrowRight size={14} />
-                      </button>
-                  </div>
-                  <div className="overflow-x-auto">
-                      <table className="w-full text-left">
-                          <thead className="bg-gray-50 border-b border-gray-100">
-                              <tr>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">氏名</th>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">大学</th>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">応募求人</th>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ステータス</th>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">応募日</th>
-                                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">アクション</th>
-                              </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-50">
-                              {candidates.map(candidate => (
-                                  <tr key={candidate.id} className="hover:bg-gray-50/50 transition-colors">
-                                      <td className="px-6 py-4 font-bold text-gray-900">{candidate.name}</td>
-                                      <td className="px-6 py-4 text-sm text-gray-600">{candidate.university}</td>
-                                      <td className="px-6 py-4 text-sm text-gray-600">{candidate.appliedJob}</td>
-                                      <td className="px-6 py-4">
-                                          <span className={`text-xs font-bold px-2 py-1 rounded-sm uppercase tracking-wide
-                                              ${candidate.status === '書類選考' ? 'bg-blue-100 text-blue-700' : 
-                                                candidate.status === '面談' ? 'bg-orange-100 text-orange-700' :
-                                                'bg-gray-100 text-gray-500' // 終了
-                                              }`}>
-                                              {candidate.status}
-                                              {candidate.status === '終了' && candidate.result === 'adopted' && ' (採用)'}
-                                              {candidate.status === '終了' && candidate.result === 'rejected' && ' (不採用)'}
-                                          </span>
-                                      </td>
-                                      <td className="px-6 py-4 text-sm text-gray-500">{candidate.appliedDate}</td>
-                                      <td className="px-6 py-4 text-right">
-                                          <button 
-                                            onClick={() => { setSelectedCandidateId(candidate.id); setActiveTab('candidates'); }}
-                                            className="text-xs font-bold bg-white border border-gray-200 px-3 py-1.5 rounded-sm hover:bg-black hover:text-white hover:border-black transition-colors"
-                                          >
-                                              詳細・チャット
-                                          </button>
-                                      </td>
-                                  </tr>
-                              ))}
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          </div>
-      );
-  };
-
-  const renderCandidates = () => {
-    const selectedCandidate = candidates.find(c => c.id === selectedCandidateId);
-    const isFinished = selectedCandidate?.status === '終了';
-    const isAdopted = selectedCandidate?.result === 'adopted';
-    const isRejected = selectedCandidate?.result === 'rejected';
-
-    return (
-        <div className="p-8 md:p-10 max-w-7xl mx-auto h-full">
-            <div className="bg-white rounded-sm shadow-sm border border-gray-200 flex h-[800px] overflow-hidden animate-fade-in-up">
-                {/* Candidate List (Left) */}
-                <div className="w-96 border-r border-gray-100 flex flex-col bg-gray-50/50">
-                    <div className="p-6 border-b border-gray-100 bg-white">
-                        <div className="relative">
-                            <input type="text" placeholder="候補者を検索" className="w-full bg-gray-50 pl-10 pr-4 py-3 text-sm rounded-sm focus:outline-none focus:bg-white focus:ring-1 focus:ring-gray-300 transition-all font-medium"/>
-                            <Search size={16} className="absolute left-3 top-3.5 text-gray-400"/>
-                        </div>
-                    </div>
-                    <div className="flex-1 overflow-y-auto">
-                        {candidates.map(candidate => (
-                            <div 
-                                key={candidate.id} 
-                                onClick={() => setSelectedCandidateId(candidate.id)}
-                                className={`p-6 border-b border-gray-100 cursor-pointer hover:bg-white transition-all ${selectedCandidateId === candidate.id ? 'bg-white border-l-4 border-l-black shadow-sm' : 'border-l-4 border-l-transparent'}`}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-bold text-base text-gray-900">{candidate.name}</h4>
-                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wide
-                                        ${candidate.status === '書類選考' ? 'bg-blue-100 text-blue-700' : 
-                                          candidate.status === '面談' ? 'bg-orange-100 text-orange-700' :
-                                          'bg-gray-100 text-gray-500'
-                                        }`}>
-                                        {candidate.status}
-                                    </span>
-                                </div>
-                                <p className="text-sm text-gray-500 mb-2 font-bold">{candidate.university}</p>
-                                <p className="text-xs text-gray-400 truncate">{candidate.lastMsg}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Chat Area (Right) */}
-                <div className="flex-1 flex flex-col bg-white relative">
-                    {selectedCandidateId ? (
-                        <>
-                            <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center shadow-sm z-10 bg-white">
-                                <div>
-                                    <h3 className="font-black text-2xl text-gray-900 flex items-center gap-2">
-                                        {selectedCandidate?.name}
-                                        <button 
-                                            onClick={() => setShowStudentModal(true)}
-                                            className="ml-2 text-gray-400 hover:text-black"
-                                            title="学生詳細を見る"
-                                        >
-                                            <Info size={20} />
-                                        </button>
-                                    </h3>
-                                    <p className="text-sm text-gray-500 font-bold mt-1">
-                                        {selectedCandidate?.university} | {selectedCandidate?.appliedJob}
-                                    </p>
-                                </div>
-                                {/* Status Badge */}
-                                <div className="flex flex-col items-end">
-                                    <span className={`text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full border 
-                                        ${selectedCandidate?.status === '書類選考' ? 'text-blue-600 border-blue-200 bg-blue-50' : 
-                                          selectedCandidate?.status === '面談' ? 'text-orange-600 border-orange-200 bg-orange-50' : 
-                                          'text-gray-500 border-gray-200 bg-gray-50'}`}>
-                                        {selectedCandidate?.status}
-                                    </span>
-                                    {selectedCandidate?.status === '終了' && (
-                                        <span className="text-[10px] font-bold text-gray-400 mt-1">
-                                            結果: {selectedCandidate.result === 'adopted' ? '採用' : '不採用'}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            
-                            <div className="flex-1 p-8 overflow-y-auto space-y-6 bg-gray-50/30">
-                                <div className="text-center text-xs text-gray-400 font-bold uppercase tracking-widest my-4">Today</div>
-                                
-                                {chatMessages.map(msg => (
-                                    <div key={msg.id} className={`flex ${msg.sender === 'company' ? 'justify-end' : 'justify-start'}`}>
-                                        {msg.sender === 'student' && <div className="w-10 h-10 rounded-full bg-gray-300 mr-4 flex-shrink-0"></div>}
-                                        <div className={`p-5 rounded-2xl max-w-[70%] text-base shadow-sm leading-relaxed ${
-                                            msg.sender === 'company' 
-                                            ? 'bg-blue-600 text-white rounded-tr-none' // Company = Blue (Not Black)
-                                            : 'bg-white text-gray-800 rounded-tl-none border border-gray-200' 
-                                        }`}>
-                                            {msg.text}
-                                        </div>
-                                        {msg.sender === 'company' && <div className="w-10 h-10 rounded-full bg-gray-800 ml-4 flex-shrink-0"></div>}
-                                    </div>
-                                ))}
-                                
-                                {isAdopted && (
-                                    <div className="flex justify-center mt-8 animate-fade-in-up">
-                                        <div className="bg-green-50 border border-green-200 text-green-800 text-sm font-bold px-8 py-4 rounded-md flex items-center gap-2 shadow-sm">
-                                            <CheckCircle size={20}/> 内定通知を送信しました（選考終了）
-                                        </div>
-                                    </div>
-                                )}
-                                {isRejected && (
-                                    <div className="flex justify-center mt-8 animate-fade-in-up">
-                                        <div className="bg-gray-100 border border-gray-200 text-gray-500 text-sm font-bold px-8 py-4 rounded-md flex items-center gap-2 shadow-sm">
-                                            <AlertCircle size={20}/> 不採用通知済み（選考終了）
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            
-                            {/* Action Area */}
-                            <div className="bg-white border-t border-gray-100 relative z-20">
-                                {/* Action Buttons Based on Status - Updated Styling */}
-                                {!isFinished && (
-                                    <div className="absolute bottom-full left-0 right-0 flex flex-col items-center justify-center gap-3 pb-6 pointer-events-none bg-gradient-to-t from-white/80 via-white/50 to-transparent pt-10">
-                                        {selectedCandidate?.status === '書類選考' && (
-                                            <button 
-                                                onClick={() => handleMoveToInterview(selectedCandidateId)}
-                                                className="pointer-events-auto w-[70%] bg-black text-white border border-black px-6 py-2.5 rounded-full shadow-lg transition-all flex items-center justify-center gap-3 font-bold text-sm hover:scale-105"
-                                            >
-                                                <UserCheck size={16}/> 面談へ進む
-                                            </button>
-                                        )}
-                                        
-                                        {selectedCandidate?.status === '面談' && (
-                                            <button 
-                                                onClick={() => handleHire(selectedCandidateId)}
-                                                className="pointer-events-auto w-[70%] bg-black text-white border border-black px-6 py-2.5 rounded-full shadow-lg transition-all flex items-center justify-center gap-3 font-bold text-sm hover:scale-105"
-                                            >
-                                                <CheckCircle size={16}/> 採用する
-                                            </button>
-                                        )}
-
-                                        <button 
-                                            onClick={() => handleReject(selectedCandidateId)}
-                                            className="pointer-events-auto w-[70%] bg-white text-gray-500 border border-gray-300 px-6 py-2.5 rounded-full shadow-lg transition-all font-bold text-sm hover:bg-gray-50 hover:text-black flex items-center justify-center gap-3"
-                                        >
-                                            <X size={16}/> 不採用
-                                        </button>
-                                    </div>
-                                )}
-
-                                <div className="p-6 flex gap-4 items-center">
-                                    <button className="p-2 text-gray-400 hover:text-black transition-colors rounded-full hover:bg-gray-100">
-                                        <Plus size={24}/>
-                                    </button>
-                                    <div className="flex-1 relative">
-                                        <input 
-                                            type="text" 
-                                            value={chatInput}
-                                            onChange={(e) => setChatInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                            disabled={isFinished}
-                                            className={`w-full bg-gray-50 border border-transparent px-6 py-4 rounded-xl text-base focus:bg-white focus:border-gray-200 focus:ring-0 outline-none transition-all placeholder-gray-400 font-medium ${isFinished ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            placeholder={isFinished ? "メッセージ送信は無効です" : "メッセージを入力..."}
-                                        />
-                                    </div>
-                                    <button 
-                                        onClick={handleSendMessage}
-                                        disabled={isFinished || !chatInput} 
-                                        className={`p-4 rounded-full transition-all shadow-md ${isFinished || !chatInput ? 'bg-gray-100 text-gray-300' : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105'}`}
-                                    >
-                                        <Send size={20}/>
-                                    </button>
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="flex-1 flex items-center justify-center text-gray-300 font-bold flex-col gap-4 bg-gray-50/30">
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                                <MessageSquare size={40} className="opacity-50"/>
-                            </div>
-                            <p className="text-lg">左側のリストから候補者を選択してください</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-  };
-
-  return (
-    <div className="flex h-screen bg-[#F3F4F6] font-sans text-gray-900 overflow-hidden">
-      
-      {/* Student Profile Modal */}
-      {showStudentModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-              <div className="bg-white w-full max-w-lg rounded-sm shadow-2xl p-8 relative">
-                  <button onClick={() => setShowStudentModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">
-                      <X size={24}/>
-                  </button>
-                  <h3 className="text-xl font-black mb-6">学生プロフィール詳細</h3>
-                  <div className="space-y-4 text-sm">
-                      <div className="border-b border-gray-100 pb-2">
-                          <span className="block text-gray-400 text-xs font-bold uppercase">氏名</span>
-                          <span className="font-bold text-lg">田中 太郎</span>
-                      </div>
-                      <div className="border-b border-gray-100 pb-2">
-                          <span className="block text-gray-400 text-xs font-bold uppercase">大学</span>
-                          <span className="font-bold">東京工科大学 工学部 情報工学科</span>
-                      </div>
-                      <div className="border-b border-gray-100 pb-2">
-                          <span className="block text-gray-400 text-xs font-bold uppercase">スキル</span>
-                          <span className="font-bold">Go, React, AWS</span>
-                      </div>
-                      <div>
-                          <span className="block text-gray-400 text-xs font-bold uppercase">GitHub</span>
-                          <a href="#" className="text-blue-600 font-bold underline">https://github.com/tanakataro</a>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {/* Contact Admin Modal */}
-      {showContactModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-              <div className="bg-white w-full max-w-lg rounded-sm shadow-2xl p-8 transform transition-all scale-100 h-[90vh] overflow-y-auto">
-                  <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
-                      <h3 className="text-xl font-black text-gray-900 flex items-center gap-3">
-                          <div className="p-2 bg-black text-white rounded-sm"><Building2 size={18}/></div>
-                          運営事務局へ連絡
-                      </h3>
-                      <button onClick={() => setShowContactModal(false)} className="text-gray-400 hover:text-black transition-colors">
-                          <X size={24}/>
-                      </button>
-                  </div>
-                  <div className="space-y-6 mb-8">
-                      <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">件名</label>
-                          <input 
-                            type="text" 
-                            value={contactForm.subject}
-                            onChange={(e) => setContactForm({...contactForm, subject: e.target.value})}
-                            className="w-full p-3 border border-gray-200 rounded-sm text-sm focus:border-black outline-none bg-gray-50 focus:bg-white transition-colors font-medium"
-                          />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">企業名</label>
-                            <input 
-                                type="text" 
-                                value={contactForm.companyName}
-                                disabled
-                                className="w-full p-3 border border-gray-200 rounded-sm text-sm bg-gray-100 text-gray-600 font-medium"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">担当者メールアドレス</label>
-                            <input 
-                                type="email" 
-                                value={contactForm.email}
-                                onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                                className="w-full p-3 border border-gray-200 rounded-sm text-sm focus:border-black outline-none bg-gray-50 focus:bg-white transition-colors font-medium"
-                            />
-                          </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">求人名 (自動入力)</label>
-                            <input 
-                                type="text" 
-                                value={contactForm.jobTitle}
-                                readOnly
-                                className="w-full p-3 border border-gray-200 rounded-sm text-sm bg-gray-100 text-gray-600 font-bold"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">候補者名 (自動入力)</label>
-                            <input 
-                                type="text" 
-                                value={contactForm.candidateName}
-                                readOnly
-                                className="w-full p-3 border border-gray-200 rounded-sm text-sm bg-gray-100 text-gray-600 font-bold"
-                            />
-                          </div>
-                      </div>
-                      <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">備考・メッセージ</label>
-                          <textarea 
-                            rows={4}
-                            value={contactForm.remarks}
-                            onChange={(e) => setContactForm({...contactForm, remarks: e.target.value})}
-                            className="w-full p-3 border border-gray-200 rounded-sm text-sm focus:border-black outline-none bg-gray-50 focus:bg-white transition-colors font-medium leading-relaxed"
-                          />
-                      </div>
-                  </div>
-                  <div className="flex justify-end gap-3">
-                      <button onClick={() => setShowContactModal(false)} className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-black transition-colors">
-                          キャンセル
-                      </button>
-                      <button onClick={handleSendContact} className="px-8 py-3 bg-black text-white text-sm font-bold rounded-sm hover:bg-gray-800 flex items-center gap-2 shadow-lg transition-transform hover:scale-105">
-                          <Send size={14}/> 送信
-                      </button>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {/* Sidebar - Changed background to match Home */}
-      <aside className="w-72 bg-black border-r border-gray-800 flex-shrink-0 flex flex-col z-20 shadow-xl">
-           <div className="h-24 flex items-center px-8 border-b border-gray-800">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white text-black flex items-center justify-center font-black text-base rounded-sm">Ti</div>
-                    <span className="font-black text-xl tracking-tight text-white">Tech intern</span>
-                </div>
-           </div>
-
-           <nav className="flex-1 py-8 px-6 space-y-2">
-                <button 
-                    onClick={() => setActiveTab('analytics')}
-                    className={`w-full flex items-center gap-4 px-4 py-5 text-lg font-bold rounded-md transition-all ${activeTab === 'analytics' ? 'bg-gray-800 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-gray-900'}`}
-                >
-                    <BarChart2 size={22}/> 情報管理
-                </button>
-                <button 
-                    onClick={() => setActiveTab('info')}
-                    className={`w-full flex items-center gap-4 px-4 py-5 text-lg font-bold rounded-md transition-all ${activeTab === 'info' ? 'bg-gray-800 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-gray-900'}`}
-                >
-                    <LayoutDashboard size={22}/> 会社情報
-                </button>
-                <button 
-                    onClick={() => setActiveTab('recruitment')}
-                    className={`w-full flex items-center gap-4 px-4 py-5 text-lg font-bold rounded-md transition-all ${activeTab === 'recruitment' ? 'bg-gray-800 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-gray-900'}`}
-                >
-                    <Briefcase size={22}/> 採用情報
-                </button>
-                <button 
-                    onClick={() => setActiveTab('candidates')}
-                    className={`w-full flex items-center gap-4 px-4 py-5 text-lg font-bold rounded-md transition-all ${activeTab === 'candidates' ? 'bg-gray-800 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-gray-900'}`}
-                >
-                    <Users size={22}/> 候補者管理
-                </button>
-           </nav>
-
-           <div className="p-6 border-t border-gray-800 space-y-4">
-               <button onClick={onNavigateHome} className="w-full flex items-center gap-3 text-gray-400 hover:text-white px-4 py-3 text-sm font-bold rounded-sm transition-colors">
-                   <Home size={18}/> サイトTOPへ
-               </button>
-               <button onClick={onLogout} className="w-full flex items-center gap-3 text-gray-500 hover:text-red-400 px-4 py-3 text-sm font-bold rounded-sm transition-colors">
-                   <LogOut size={18}/> ログアウト
-               </button>
-           </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#F3F4F6]">
-          {/* Header */}
-          <header className="h-20 bg-white/80 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-8 z-10 sticky top-0">
-               <h1 className="font-bold text-gray-900 animate-fade-in text-lg">
-                   {activeTab === 'analytics' && 'Dashboard Overview'}
-                   {activeTab === 'info' && 'Company Profile'}
-                   {activeTab === 'recruitment' && 'Job Listings'}
-                   {activeTab === 'candidates' && 'Candidate Management'}
-               </h1>
-               <div className="flex items-center gap-4">
-                   <span className="text-sm font-bold text-gray-600">{companyName}</span>
-                   <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-black rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-white">
-                       {companyName.charAt(0)}
-                   </div>
-               </div>
-          </header>
-
-          {/* Scrollable Content Area */}
-          <main className="flex-1 overflow-y-auto">
-               <div className="">
-                   {activeTab === 'analytics' && renderAnalytics()}
-                   {activeTab === 'info' && renderInfo()}
-                   {activeTab === 'recruitment' && renderRecruitment()}
-                   {activeTab === 'candidates' && renderCandidates()}
-               </div>
-          </main>
-      </div>
-    </div>
-  );
 };

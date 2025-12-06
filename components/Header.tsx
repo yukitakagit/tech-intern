@@ -21,8 +21,6 @@ export const Header: React.FC<HeaderProps> = ({
     onNavigateRecruiter,
     onLogout 
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -42,42 +40,27 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-col items-end justify-center">
           <div className="flex items-center gap-4">
             {user ? (
-              <div className="relative">
+              <div className="flex items-center gap-3">
+                  {/* Name Button - Goes directly to MyPage */}
                   <button 
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-1.5 rounded-sm transition-colors focus:outline-none"
+                      onClick={onNavigateMyPage}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-1.5 rounded-sm transition-colors focus:outline-none group"
+                      title="マイページへ"
                   >
-                      <div className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
                           <User size={14}/>
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{user}</span>
+                      <span className="text-sm font-bold text-gray-900 border-b border-transparent group-hover:border-black transition-colors">{user}</span>
                   </button>
 
-                  {/* Dropdown Menu */}
-                  {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-xl border border-gray-100 py-1 animate-fade-in-up">
-                          <button 
-                              onClick={() => {
-                                  onNavigateMyPage();
-                                  setIsDropdownOpen(false);
-                              }}
-                              className="w-full text-left px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-black flex items-center gap-2"
-                          >
-                              <Settings size={16} /> マイページ
-                          </button>
-                          <div className="h-px bg-gray-100 my-1"></div>
-                          <button 
-                              onClick={() => {
-                                  onLogout();
-                                  setIsDropdownOpen(false);
-                              }}
-                              className="w-full text-left px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-2"
-                          >
-                              <LogOut size={16} /> ログアウト
-                          </button>
-                      </div>
-                  )}
+                  {/* Separate Logout Button */}
+                  <button 
+                      onClick={onLogout}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                      title="ログアウト"
+                  >
+                      <LogOut size={18} />
+                  </button>
               </div>
             ) : (
               <>

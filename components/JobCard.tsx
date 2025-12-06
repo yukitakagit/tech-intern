@@ -31,7 +31,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
     <div 
       className="group flex flex-col bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-200 aspect-[1/1.3]"
     >
-      {/* Card Header Image - Takes up ~70% of the card */}
+      {/* Card Header Image - Takes up ~65% of the card */}
       <div className="relative h-[65%] w-full overflow-hidden">
         <img 
           src={job.coverImageUrl} 
@@ -53,7 +53,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
       </div>
 
       {/* Card Content - Minimalist */}
-      <div className="flex-1 p-5 flex flex-col justify-between bg-white relative">
+      <div className="flex-1 p-5 flex flex-col bg-white relative">
         <div>
             {/* Company Name (Removed Logo) */}
             <div className="mb-2">
@@ -69,7 +69,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
         </div>
 
         {/* Tags - Minimal */}
-        <div className="mt-3 flex flex-wrap gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+        <div className="mt-4 flex flex-wrap gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
             {job.tags.slice(0, 3).map((tag) => (
                 <span key={tag} className="text-[10px] font-medium text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-sm">
                     #{tag}

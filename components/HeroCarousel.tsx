@@ -2,7 +2,11 @@
 import React, { useMemo } from 'react';
 import { JOB_LISTINGS } from '../constants';
 
-export const HeroCarousel: React.FC = () => {
+interface HeroCarouselProps {
+    onNavigateJobDetail: (id: string) => void;
+}
+
+export const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigateJobDetail }) => {
   // Use job listings to create "cards" in the carousel
   // Duplicate to create seamless loop
   
@@ -23,6 +27,7 @@ export const HeroCarousel: React.FC = () => {
         {displayItems.map((job, index) => (
           <div 
             key={`${job.id}-${index}`} 
+            onClick={() => onNavigateJobDetail(job.id)}
             className="relative w-[300px] h-[360px] flex-shrink-0 bg-white shadow-lg border border-gray-200 rounded-sm overflow-hidden group cursor-pointer hover:border-gray-400 transition-colors"
           >
             <img 

@@ -229,7 +229,7 @@ const App: React.FC = () => {
         <div className="absolute top-20 right-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl animate-float pointer-events-none"></div>
         <div className="absolute top-60 left-10 w-48 h-48 bg-purple-400/10 rounded-full blur-3xl animate-float-delayed pointer-events-none"></div>
 
-        <HeroCarousel />
+        <HeroCarousel onNavigateJobDetail={navigateJobDetail} />
         
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <div className="flex flex-col lg:flex-row gap-12">
