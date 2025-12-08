@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { UserPlus, User, LogOut, Settings } from 'lucide-react';
+import { UserPlus, User, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   user: string | null;

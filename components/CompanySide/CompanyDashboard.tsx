@@ -3,13 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Company, JobListing } from '../../types';
 import { JOB_LISTINGS } from '../../constants';
 import { 
-    Save, LogOut, Building2, Globe, Users, FileText, 
+    Save, LogOut, Building2, Users, FileText, 
     Briefcase, LayoutDashboard, MessageSquare, Plus, Edit2, Search, Send, Trash2, CheckCircle,
-    Home, BarChart2, X, AlertCircle, Upload, Clock, DollarSign, Eye, ArrowLeft, ArrowRight, Info, UserCheck, MapPin,
+    Home, BarChart2, X, AlertCircle, Upload, Clock, ArrowLeft, ArrowRight, Info, UserCheck, MapPin,
     Bold, Italic, List, Image as ImageIcon
 } from 'lucide-react';
-import { CompanyPage } from '../CompanyPage';
-import { JobDetailPage } from '../JobDetailPage';
 
 interface CompanyDashboardProps {
   companyName: string;
@@ -183,7 +181,7 @@ export const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ companyName,
   });
 
   // State for Recruitment
-  const [jobs, setJobs] = useState<JobListing[]>(JOB_LISTINGS.slice(0, 3).map(j => ({...j, status: 'published'})));
+  const [jobs, setJobs] = useState<JobListing[]>(JOB_LISTINGS.slice(0, 3).map(j => ({...j, status: 'published' as const})));
   const [viewingJob, setViewingJob] = useState<JobListing | null>(null); 
   const [isEditingJob, setIsEditingJob] = useState(false); 
   const [editingJobData, setEditingJobData] = useState<Partial<JobListing> | null>(null);
@@ -216,7 +214,7 @@ export const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ companyName,
 
   // --- Handlers ---
 
-  const handleProfileChange = (field: keyof Company, value: string) => {
+  const handleProfileChange = (field: Exclude<keyof Company, 'members'>, value: string) => {
       setProfile(prev => ({ ...prev, [field]: value }));
   };
 

@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Users, Building2, LogOut, Search, LogIn, FileText, HelpCircle, Settings, Plus, Edit2, Trash2, Lock, Mail, ArrowLeft, Send, Save, Eye, X, Upload, Bold, Italic, List, Type, Image as ImageIcon } from 'lucide-react';
+import { Users, Building2, LogOut, Search, LogIn, FileText, HelpCircle, Settings, Plus, Edit2, Trash2, Lock, Mail, ArrowLeft, Send, Save, Eye, X, Upload, Bold, Italic, List, Image as ImageIcon } from 'lucide-react';
 import { JOB_LISTINGS } from '../constants';
 import { Article, FAQ } from '../types';
 
