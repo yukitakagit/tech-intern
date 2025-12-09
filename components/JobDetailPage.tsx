@@ -256,13 +256,13 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                             <div 
                                 key={otherJob.id} 
                                 onClick={() => onNavigateJobDetail(otherJob.id)}
-                                className="group cursor-pointer block"
+                                className="group cursor-pointer block border border-gray-200 rounded-sm p-4 hover:border-black hover:shadow-sm transition-all bg-white"
                             >
-                                <div className="text-xs font-bold text-gray-400 mb-1">{otherJob.workStyle}</div>
-                                <h5 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                                <div className="text-xs font-bold text-gray-400 mb-2">{otherJob.workStyle}</div>
+                                <h5 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug mb-3">
                                     {otherJob.title}
                                 </h5>
-                                <div className="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                                <div className="text-xs text-gray-500 flex items-center gap-1">
                                     <Clock size={12}/> {otherJob.salary}
                                 </div>
                             </div>

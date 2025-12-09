@@ -42,9 +42,6 @@ export const CompanyListPage: React.FC<CompanyListPageProps> = ({ onBack, onNavi
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold">No Image</div>
                             )}
-                            <div className="absolute top-4 left-4">
-                                <img src={company.logoUrl} className="w-14 h-14 rounded-sm border-2 border-white shadow-md bg-white" alt=""/>
-                            </div>
                       </div>
 
                       {/* Right: Info */}

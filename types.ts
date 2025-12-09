@@ -29,6 +29,7 @@ export interface JobListing {
   description: string;
   requiredSkills: string[];
   status?: 'published' | 'draft';
+  isActivelyHiring?: boolean; // Added: 積極採用中フラグ
   
   // Detailed fields
   businessContent?: string;

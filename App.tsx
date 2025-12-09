@@ -26,7 +26,7 @@ import { CompanyDashboard } from './components/CompanySide/CompanyDashboard';
 import { AdminDashboard } from './components/AdminDashboard'; 
 import { JOB_LISTINGS, ARTICLES, INITIAL_USER_PROFILE } from './constants';
 import { JobListing, FilterState, AppRoute, Article, FAQ, UserProfile } from './types';
-import { Search, LogOut, ArrowRight, Instagram, ChevronRight } from 'lucide-react';
+import { Search, LogOut, ArrowRight, Instagram, ChevronRight, Zap } from 'lucide-react';
 
 const App: React.FC = () => {
   const [route, setRoute] = useState<AppRoute>({ name: 'HOME' });
@@ -38,15 +38,16 @@ const App: React.FC = () => {
   const [browsingHistory, setBrowsingHistory] = useState<string[]>([]);
 
   // Content Data State (Lifted for Admin management)
+  const [jobs, setJobs] = useState<JobListing[]>(JOB_LISTINGS); // Jobs lifted to state
   const [articles, setArticles] = useState<Article[]>(
-      ARTICLES.map(a => ({ ...a, status: 'published' })) // Initialize defaults as published
+      ARTICLES.map(a => ({ ...a, status: 'published' as const }))
   );
   const [faqs, setFaqs] = useState<FAQ[]>([
       { id: 1, q: 'プログラミング未経験でも応募できますか？', a: 'はい、一部の企業では未経験者向けの研修プログラムを用意したインターン募集を行っています。ただし、Tech internでは事前にProgateやドットインストール、または独学での基礎学習を済ませておくことを推奨しています。', status: 'published' },
       { id: 2, q: '大学の授業と両立は可能ですか？', a: '多くの企業が学生のスケジュールに配慮しています。「週2日〜」「土日OK」「夕方から」など、柔軟なシフトの企業も多数あります。検索フィルターで「土日勤務OK」などを選択して探してみてください。', status: 'published' },
       { id: 3, q: '給与は支払われますか？', a: 'Tech internに掲載されている全ての長期インターンシップは有給です。時給制が一般的ですが、成果報酬型の案件もあります。詳細は各求人票をご確認ください。', status: 'published' },
       { id: 4, q: 'リモートワークは可能ですか？', a: 'はい、フルリモート可能な求人も多数掲載しています。特にWeb系・IT系の企業では、SlackやZoomを用いたリモート開発体制が整っていることが多いです。', status: 'published' },
-      { id: 5, q: '選考にはどれくらいの期間がかかりますか？', a: '平均して2週間〜1ヶ月程度です。GitHub連携をしておくと、技術スキルの証明がスムーズになり、書類選考の通過率が上がったり、選考期間が短縮される傾向にあります。', status: 'published' },
+      { id: 5, q: '選考にはどれくらいの期間がかかりますか？', a: '平均して2週間〜1ヶ月程度です。GitHub連携をしておくと、技術スキルの証明がスムーズになり、選考期間が短縮される傾向にあります。', status: 'published' },
   ]);
 
   // Search & Filter State
@@ -59,9 +60,9 @@ const App: React.FC = () => {
     characteristics: []
   });
 
-  // Filter Logic
+  // Filter Logic - Updated to use `jobs` state instead of constant
   const filteredJobs = useMemo(() => {
-    return JOB_LISTINGS.filter(job => {
+    return jobs.filter(job => {
         if (job.status === 'draft') return false;
         if (searchQuery) {
             const lowerQ = searchQuery.toLowerCase();
@@ -112,7 +113,12 @@ const App: React.FC = () => {
         }
         return true;
     });
-  }, [searchQuery, filters]);
+  }, [searchQuery, filters, jobs]);
+
+  // Actively Hiring Jobs - derived from state
+  const activelyHiringJobs = useMemo(() => {
+      return jobs.filter(j => j.isActivelyHiring && j.status !== 'draft');
+  }, [jobs]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -230,11 +236,11 @@ const App: React.FC = () => {
               break;
           case 'COMPANY_DETAIL':
               items.push({ label: '掲載企業一覧', onClick: navigateCompanyList });
-              const company = JOB_LISTINGS.find(j => j.company.id === (route as any).id)?.company;
+              const company = jobs.find(j => j.company.id === (route as any).id)?.company;
               items.push({ label: company?.name || 'Company' });
               break;
           case 'JOB_DETAIL':
-              const job = JOB_LISTINGS.find(j => j.id === (route as any).id);
+              const job = jobs.find(j => j.id === (route as any).id);
               if (job) {
                   items.push({ label: job.company.industry || 'IT/Web' }); // Industry
                   items.push({ label: job.company.name, onClick: () => navigateCompany(job.company.id) }); // Company
@@ -307,7 +313,7 @@ const App: React.FC = () => {
       <SEO title="Tech intern" />
       {/* Recruiter Link below Header, above Hero */}
       {!user && (
-        <div className="w-full flex justify-end px-4 sm:px-6 lg:px-8 py-2">
+        <div className="max-w-[1400px] mx-auto w-full flex justify-end px-4 sm:px-6 lg:px-8 py-2">
             <button
                 onClick={navigateCompanyLP}
                 className="text-xs font-bold tracking-widest text-gray-500 hover:text-black transition-colors flex items-center gap-2 group"
@@ -364,6 +370,7 @@ const App: React.FC = () => {
                   </h2>
               </div>
 
+              {/* NEW ARRIVALS */}
               <div className="flex items-end justify-between mb-8 pb-4 border-b border-gray-200/50 opacity-0 animate-fade-in-up [animation-delay:300ms] forwards">
                   <div>
                   <h2 className="text-3xl font-black text-gray-900 tracking-tight">NEW ARRIVALS</h2>
@@ -371,7 +378,7 @@ const App: React.FC = () => {
                       {filters.occupations.length > 0 || filters.languages.length > 0 ? '検索結果' : '新着のインターンシップ'}
                   </p>
                   </div>
-                  {/* Link to All Jobs */}
+                  {/* Link to All Jobs (Top Right) */}
                   <button 
                     onClick={navigateAllJobs}
                     className="hidden md:flex items-center gap-1 text-sm font-bold border-b border-black pb-0.5 hover:opacity-70 transition-opacity"
@@ -414,15 +421,62 @@ const App: React.FC = () => {
                     </button>
                 </div>
               )}
-              
-              <div className="mt-12 text-center md:hidden">
+
+              {/* View All Button Under New Arrivals Grid */}
+              <div className="mt-12 text-center opacity-0 animate-fade-in-up [animation-delay:500ms] forwards">
                  <button 
                   onClick={navigateAllJobs} 
-                  className="inline-flex items-center gap-2 text-sm font-bold border border-gray-300 px-6 py-3 rounded-sm hover:bg-black hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-bold border border-gray-300 px-8 py-3 rounded-sm hover:bg-black hover:text-white transition-colors"
                 >
                   募集職種一覧を見る <ArrowRight size={14} />
                 </button>
               </div>
+
+              {/* ACTIVELY HIRING SECTION (PICK UP) */}
+              {!searchQuery && filters.occupations.length === 0 && filters.languages.length === 0 && activelyHiringJobs.length > 0 && (
+                  <div className="mt-20 opacity-0 animate-fade-in-up [animation-delay:600ms] forwards">
+                      <div className="flex items-end justify-between mb-8 pb-4 border-b border-gray-200">
+                          <div className="flex items-center gap-2">
+                              <Zap size={24} className="text-black fill-current" />
+                              <div>
+                                  <h2 className="text-2xl font-black text-gray-900 tracking-tight">PICK UP</h2>
+                                  <p className="text-xs font-bold text-black mt-1 uppercase tracking-widest">
+                                      積極採用中の長期インターン求人
+                                  </p>
+                              </div>
+                          </div>
+                          {/* Link to All Jobs (Top Right for Pick Up) */}
+                          <button 
+                            onClick={navigateAllJobs}
+                            className="hidden md:flex items-center gap-1 text-sm font-bold border-b border-black pb-0.5 hover:opacity-70 transition-opacity"
+                          >
+                            VIEW ALL <ArrowRight size={14} />
+                          </button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                          {activelyHiringJobs.slice(0, 9).map((job, index) => (
+                              <div 
+                                  key={job.id} 
+                                  onClick={() => navigateJobDetail(job.id)} 
+                                  className="cursor-pointer relative"
+                              >
+                                  <JobCard job={job} />
+                              </div>
+                          ))}
+                      </div>
+
+                      {/* View All Button Under Pick Up Grid */}
+                      <div className="mt-12 text-center">
+                         <button 
+                          onClick={navigateAllJobs} 
+                          className="inline-flex items-center gap-2 text-sm font-bold border border-gray-300 px-8 py-3 rounded-sm hover:bg-black hover:text-white transition-colors"
+                        >
+                          積極採用中の求人一覧を見る <ArrowRight size={14} />
+                        </button>
+                      </div>
+                  </div>
+              )}
               
               {/* Company Section */}
               <div className="mt-20">
@@ -444,7 +498,7 @@ const App: React.FC = () => {
             <FaqSection faqs={faqs} />
         </div>
 
-        {/* Social Media Section - Added */}
+        {/* Social Media Section */}
         <section className="py-24 bg-white border-t border-gray-200 opacity-0 animate-fade-in-up [animation-delay:1000ms] forwards">
             <div className="max-w-7xl mx-auto px-6 text-center">
                 <h2 className="text-3xl font-black text-gray-900 mb-10 tracking-tight uppercase">FOLLOW US</h2>
@@ -469,7 +523,7 @@ const App: React.FC = () => {
   );
 
   const renderJobDetail = () => {
-      const job = JOB_LISTINGS.find(j => j.id === (route as any).id);
+      const job = jobs.find(j => j.id === (route as any).id);
       if (!job) return <div>Not Found</div>;
       return (
         <>
@@ -490,7 +544,7 @@ const App: React.FC = () => {
   };
 
   const renderCompanyDetail = () => {
-      const company = JOB_LISTINGS.find(j => j.company.id === (route as any).id)?.company;
+      const company = jobs.find(j => j.company.id === (route as any).id)?.company;
       if (!company) return <div>Not Found</div>;
       return (
           <>
@@ -548,6 +602,8 @@ const App: React.FC = () => {
                   setArticles={setArticles}
                   faqs={faqs}
                   setFaqs={setFaqs}
+                  jobs={jobs}
+                  setJobs={setJobs}
               />
           </main>
       );
@@ -644,7 +700,7 @@ const App: React.FC = () => {
         {route.name === 'APPLICATION' && (
             <div className="animate-fade-in-up">
                 <ApplicationPage 
-                    job={JOB_LISTINGS.find(j => j.id === (route as any).jobId)!} 
+                    job={jobs.find(j => j.id === (route as any).jobId)!} 
                     onBack={() => navigateJobDetail((route as any).jobId)} 
                     onSubmit={() => { alert('応募完了'); navigateMyPage('status'); }} 
                     initialData={user ? userProfile : null}

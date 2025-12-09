@@ -63,7 +63,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '全学年対象',
     numberOfHires: '3名',
     workLocation: '東京都港区浜松町2-4-1',
-    nearestStation: '浜松町駅 徒歩3分, 大門駅 徒歩5分'
+    nearestStation: '浜松町駅 徒歩3分, 大門駅 徒歩5分',
+    isActivelyHiring: true
   },
   {
     id: '2',
@@ -110,7 +111,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '学部3年以上推奨',
     numberOfHires: '若干名',
     workLocation: '東京都港区六本木6-10-1 六本木ヒルズ',
-    nearestStation: '六本木駅 直結'
+    nearestStation: '六本木駅 直結',
+    isActivelyHiring: true
   },
   // Dummy duplicate job for CyberScale Inc. (c2)
   {
@@ -156,7 +158,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '不問',
     numberOfHires: '1名',
     workLocation: '東京都港区六本木',
-    nearestStation: '六本木駅'
+    nearestStation: '六本木駅',
+    isActivelyHiring: true
   },
   {
     id: '3',
@@ -201,7 +204,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '不問',
     numberOfHires: '2名',
     workLocation: 'フルリモート（出社可：大阪オフィス）',
-    nearestStation: '大阪駅 徒歩5分'
+    nearestStation: '大阪駅 徒歩5分',
+    isActivelyHiring: true
   },
   {
     id: '4',
@@ -242,7 +246,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '大学院生歓迎',
     numberOfHires: '1名',
     workLocation: '福岡県福岡市博多区',
-    nearestStation: '博多駅'
+    nearestStation: '博多駅',
+    isActivelyHiring: true
   },
   {
     id: '5',
@@ -283,7 +288,8 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '不問',
     numberOfHires: '2名',
     workLocation: '東京都新宿区',
-    nearestStation: '新宿駅'
+    nearestStation: '新宿駅',
+    isActivelyHiring: true
   },
   {
     id: '6',
@@ -324,8 +330,198 @@ export const JOB_LISTINGS: JobListing[] = [
     targetGrade: '全学年',
     numberOfHires: '5名',
     workLocation: '東京都渋谷区',
-    nearestStation: '渋谷駅'
+    nearestStation: '渋谷駅',
+    isActivelyHiring: true
   },
+  {
+    id: '7',
+    title: 'Pythonでの機械学習モデル構築＆データ分析アシスタント募集',
+    company: {
+      id: 'c7',
+      name: 'AI Solutions',
+      logoUrl: 'https://picsum.photos/id/200/100/100',
+      location: '東京都 千代田区',
+      industry: 'AI / Data Science',
+      coverImage: 'https://picsum.photos/id/201/800/450',
+      employees: '40名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/201/800/450',
+    tags: ['Python', 'PyTorch', 'Machine Learning', 'Data'],
+    salary: '時給 1,500円〜',
+    type: 'Long-term',
+    workStyle: 'Hybrid',
+    description: '最先端の機械学習モデルを用いたソリューション開発...',
+    requiredSkills: ['Python', 'Basic Math'],
+    isActivelyHiring: true
+  },
+  {
+    id: '8',
+    title: 'Kotlin/Swiftを用いたモバイルアプリ開発！自社サービスをグロースさせよう',
+    company: {
+      id: 'c8',
+      name: 'Mobile First Inc.',
+      logoUrl: 'https://picsum.photos/id/210/100/100',
+      location: '東京都 目黒区',
+      industry: 'Mobile App',
+      coverImage: 'https://picsum.photos/id/211/800/450',
+      employees: '25名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/211/800/450',
+    tags: ['Kotlin', 'Swift', 'iOS', 'Android'],
+    salary: '時給 1,400円〜',
+    type: 'Long-term',
+    workStyle: 'Remote',
+    description: '累計100万DL突破の便利ツールアプリの開発...',
+    requiredSkills: ['Mobile App Dev'],
+    isActivelyHiring: true
+  },
+  {
+    id: '9',
+    title: '【フルリモート】PHP/LaravelでのWebアプリケーション開発',
+    company: {
+      id: 'c9',
+      name: 'WebWorks',
+      logoUrl: 'https://picsum.photos/id/220/100/100',
+      location: '京都府 京都市',
+      industry: 'Web Development',
+      coverImage: 'https://picsum.photos/id/221/800/450',
+      employees: '10名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/221/800/450',
+    tags: ['PHP', 'Laravel', 'MySQL', 'Vue.js'],
+    salary: '時給 1,300円〜',
+    type: 'Long-term',
+    workStyle: 'Remote',
+    description: 'ECサイト構築や予約システムのバックエンド開発...',
+    requiredSkills: ['PHP', 'HTML/CSS'],
+    isActivelyHiring: true
+  },
+  {
+    id: '10',
+    title: 'Ruby on Railsを用いたマッチングプラットフォーム開発',
+    company: {
+      id: 'c10',
+      name: 'Connect People',
+      logoUrl: 'https://picsum.photos/id/230/100/100',
+      location: '東京都 渋谷区',
+      industry: 'C2C Service',
+      coverImage: 'https://picsum.photos/id/231/800/450',
+      employees: '60名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/231/800/450',
+    tags: ['Ruby', 'Rails', 'AWS', 'React'],
+    salary: '時給 1,600円〜',
+    type: 'Long-term',
+    workStyle: 'Hybrid',
+    description: '人と人をつなぐC2Cプラットフォームの新機能開発...',
+    requiredSkills: ['Ruby', 'Web Basic'],
+    isActivelyHiring: true
+  },
+  {
+    id: '11',
+    title: 'ゲーム大好き集まれ！C++でのコンシューマーゲーム開発補助',
+    company: {
+      id: 'c11',
+      name: 'GameStudio Z',
+      logoUrl: 'https://picsum.photos/id/240/100/100',
+      location: '東京都 新宿区',
+      industry: 'Game',
+      coverImage: 'https://picsum.photos/id/241/800/450',
+      employees: '150名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/241/800/450',
+    tags: ['C++', 'Unreal Engine', 'Game', '3D'],
+    salary: '時給 1,300円〜',
+    type: 'Long-term',
+    workStyle: 'On-site',
+    description: '有名タイトルの続編開発プロジェクトに参加...',
+    requiredSkills: ['C++', 'Math'],
+    isActivelyHiring: true
+  },
+  {
+    id: '12',
+    title: 'データサイエンスで社会課題を解決！公共系プロジェクトのデータ分析',
+    company: {
+      id: 'c12',
+      name: 'Civic Data',
+      logoUrl: 'https://picsum.photos/id/250/100/100',
+      location: '東京都 中央区',
+      industry: 'GovTech',
+      coverImage: 'https://picsum.photos/id/251/800/450',
+      employees: '20名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/251/800/450',
+    tags: ['Python', 'SQL', 'Tableau', 'Data'],
+    salary: '時給 1,500円〜',
+    type: 'Long-term',
+    workStyle: 'Remote',
+    description: 'オープンデータを活用した都市計画シミュレーション...',
+    requiredSkills: ['Data Analysis'],
+    isActivelyHiring: true
+  },
+  {
+    id: '13',
+    title: 'Vue.js/Nuxt.jsを用いたメディアサイトのフロントエンド開発',
+    company: {
+      id: 'c13',
+      name: 'Media Link',
+      logoUrl: 'https://picsum.photos/id/260/100/100',
+      location: '東京都 港区',
+      industry: 'Media',
+      coverImage: 'https://picsum.photos/id/261/800/450',
+      employees: '35名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/261/800/450',
+    tags: ['Vue.js', 'Nuxt.js', 'JavaScript', 'UI/UX'],
+    salary: '時給 1,300円〜',
+    type: 'Long-term',
+    workStyle: 'Hybrid',
+    description: '月間500万PVを誇るテック系メディアのリニューアル...',
+    requiredSkills: ['JavaScript', 'HTML/CSS'],
+    isActivelyHiring: true
+  },
+  {
+    id: '14',
+    title: 'IoTデバイス制御システムの組み込みソフトウェア開発',
+    company: {
+      id: 'c14',
+      name: 'Smart Device Co.',
+      logoUrl: 'https://picsum.photos/id/270/100/100',
+      location: '神奈川県 横浜市',
+      industry: 'IoT / Hardware',
+      coverImage: 'https://picsum.photos/id/271/800/450',
+      employees: '80名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/271/800/450',
+    tags: ['C', 'C++', 'IoT', 'Embedded'],
+    salary: '時給 1,400円〜',
+    type: 'Long-term',
+    workStyle: 'On-site',
+    description: 'スマートホームデバイスのファームウェア開発...',
+    requiredSkills: ['C', 'Electronics'],
+    isActivelyHiring: true
+  },
+  {
+    id: '15',
+    title: 'Javaを用いた大規模金融システムの保守・開発インターン',
+    company: {
+      id: 'c15',
+      name: 'FinTech Systems',
+      logoUrl: 'https://picsum.photos/id/280/100/100',
+      location: '東京都 千代田区',
+      industry: 'FinTech / SIer',
+      coverImage: 'https://picsum.photos/id/281/800/450',
+      employees: '300名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/281/800/450',
+    tags: ['Java', 'Spring', 'Oracle', 'Finance'],
+    salary: '時給 1,500円〜',
+    type: 'Long-term',
+    workStyle: 'Hybrid',
+    description: '安定稼働が求められる金融系基幹システムの開発...',
+    requiredSkills: ['Java'],
+    isActivelyHiring: true
+  }
 ];
 
 export const ARTICLES: Article[] = [

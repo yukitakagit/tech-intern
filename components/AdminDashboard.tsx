@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Users, Building2, LogOut, Search, LogIn, FileText, HelpCircle, Settings, Plus, Edit2, Trash2, Lock, Mail, ArrowLeft, Send, Save, Eye, X, Upload, Bold, Italic, List, Image as ImageIcon } from 'lucide-react';
+import { Users, Building2, LogOut, Search, LogIn, FileText, HelpCircle, Settings, Plus, Edit2, Trash2, Lock, Mail, ArrowLeft, Send, Save, Eye, X, Upload, Bold, Italic, List, Image as ImageIcon, Briefcase, Zap, CheckSquare, Square } from 'lucide-react';
 import { JOB_LISTINGS } from '../constants';
-import { Article, FAQ } from '../types';
+import { Article, FAQ, JobListing } from '../types';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -14,6 +14,8 @@ interface AdminDashboardProps {
   setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
   faqs: FAQ[];
   setFaqs: React.Dispatch<React.SetStateAction<FAQ[]>>;
+  jobs: JobListing[]; // Added
+  setJobs: React.Dispatch<React.SetStateAction<JobListing[]>>; // Added
 }
 
 // --- Rich Text Editor (Fixed Image Insertion) ---
@@ -148,9 +150,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     articles,
     setArticles,
     faqs,
-    setFaqs
+    setFaqs,
+    jobs,
+    setJobs
 }) => {
-  const [activeTab, setActiveTab] = useState<'companies' | 'students' | 'articles' | 'faqs' | 'settings'>('companies');
+  const [activeTab, setActiveTab] = useState<'companies' | 'students' | 'articles' | 'faqs' | 'settings' | 'jobs'>('companies');
   
   // Settings State
   const [adminEmail, setAdminEmail] = useState('contact.kaxin@gmail.com');
@@ -165,8 +169,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [editingFaqData, setEditingFaqData] = useState<Partial<FAQ> | null>(null);
 
   // Mock Data for Lists
-  const companies = Array.from(new Set(JOB_LISTINGS.map(j => j.company.id)))
-    .map(id => JOB_LISTINGS.find(j => j.company.id === id)?.company)
+  const companies = Array.from(new Set(jobs.map(j => j.company.id)))
+    .map(id => jobs.find(j => j.company.id === id)?.company)
     .filter((c): c is NonNullable<typeof c> => !!c);
 
   const students = [
@@ -277,6 +281,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       }
   };
 
+  // --- Job Handlers ---
+  const toggleActiveHiring = (jobId: string) => {
+      setJobs(prevJobs => 
+          prevJobs.map(job => 
+              job.id === jobId 
+                  ? { ...job, isActivelyHiring: !job.isActivelyHiring }
+                  : job
+          )
+      );
+  };
+
 
   // --- Render Functions ---
   const renderCompanies = () => (
@@ -303,6 +318,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               >
                                   <LogIn size={12}/> Login as
                               </button>
+                          </td>
+                      </tr>
+                  ))}
+              </tbody>
+          </table>
+      </div>
+  );
+
+  const renderJobs = () => (
+      <div className="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
+          <div className="p-4 bg-gray-50 border-b border-gray-200 text-sm text-gray-600">
+              ホーム画面の「PICK UP / 積極採用中」セクションに表示する求人を選択できます。
+          </div>
+          <table className="w-full text-left">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">積極採用中</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">求人タイトル</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">会社名</th>
+                      <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ステータス</th>
+                  </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                  {jobs.map(job => (
+                      <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 text-center w-24">
+                              <button 
+                                  onClick={() => toggleActiveHiring(job.id)}
+                                  className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-bold transition-colors ${job.isActivelyHiring ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                              >
+                                  {job.isActivelyHiring ? <CheckSquare size={16} /> : <Square size={16} />}
+                                  {job.isActivelyHiring ? 'ON' : 'OFF'}
+                              </button>
+                          </td>
+                          <td className="px-6 py-4 font-bold text-sm line-clamp-1 max-w-md">{job.title}</td>
+                          <td className="px-6 py-4 text-sm">{job.company.name}</td>
+                          <td className="px-6 py-4 text-sm">
+                              <span className={`px-2 py-1 rounded-sm text-xs font-bold ${job.status === 'draft' ? 'bg-gray-200 text-gray-600' : 'bg-green-100 text-green-700'}`}>
+                                  {job.status || 'published'}
+                              </span>
                           </td>
                       </tr>
                   ))}
@@ -585,6 +640,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Building2 size={18} /> 企業管理
             </button>
             <button 
+                onClick={() => setActiveTab('jobs')}
+                className={`w-full flex items-center gap-4 px-6 py-3 text-sm font-bold transition-colors ${activeTab === 'jobs' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'}`}
+            >
+                <Briefcase size={18} /> 求人管理
+            </button>
+            <button 
                 onClick={() => setActiveTab('students')}
                 className={`w-full flex items-center gap-4 px-6 py-3 text-sm font-bold transition-colors ${activeTab === 'students' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'}`}
             >
@@ -621,6 +682,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <header className="flex justify-between items-center mb-10">
               <h2 className="text-2xl font-black">
                   {activeTab === 'companies' && '企業一覧・管理'}
+                  {activeTab === 'jobs' && '求人管理 (PICK UP)'}
                   {activeTab === 'students' && '学生一覧・管理'}
                   {activeTab === 'articles' && 'コラム記事管理'}
                   {activeTab === 'faqs' && 'FAQ管理'}
@@ -635,6 +697,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </header>
 
           {activeTab === 'companies' && renderCompanies()}
+          {activeTab === 'jobs' && renderJobs()}
           {activeTab === 'students' && renderStudents()}
           {activeTab === 'articles' && renderArticles()}
           {activeTab === 'faqs' && renderFAQs()}
