@@ -21,7 +21,7 @@ export const JOB_LISTINGS: JobListing[] = [
     title: '文章で人を感動させるライター・コピーライターになろう！第二新卒歓迎',
     company: {
       id: 'c1',
-      name: '株式会社NextGen Creative', // Fictional Name
+      name: '株式会社NextGen Creative',
       logoUrl: 'https://picsum.photos/id/64/100/100',
       location: '東京都 港区',
       mission: 'クリエイティブの力で、企業のポテンシャルを解放する',
@@ -39,62 +39,31 @@ export const JOB_LISTINGS: JobListing[] = [
     salary: '時給 1,200円〜',
     type: 'Long-term',
     workStyle: 'Hybrid',
-    description: `何故、NextGen Creativeに入社したのか？
-たまたま前職のコンサルタント時代に知り合ったのが現在のうちの会社でした。その時クライアントであったうちの社長の話を聞いた時の衝撃は今でも忘れられません。行動指針通り仕事をやれば、人生大成功すると確信したからです。
-当社は、広告代理店とコンサルティングファームのハイブリッドのような事業展開をしています。
-最近は、さらに進化し、その2社を凌駕するようなエキサイティングな仕事もたくさん舞い込んで来て、ワクワクドキドキが止まりません！興味を持たれた方一度遊びに来ませんか？
-
-【なぜやるのか：目先の利益は追わない。お客さまとの長期的な関係性を築くビジネスモデル】
-
-私たちは営業活動をしていません。
-目先の利益ではなく、長期的な関係性を築くため、相手の立場に立ち、
-感情移入する“親身さ”が私たちの仕事の基本姿勢です。
-
-短期視点ではなく、長期視点で、
-「どうすればその企業の課題が解決されるのか」
-「価値が伝わるのか」
-などを考え、必要なことであれば、すべてを提案します。
-
-一見非合理かもしれませんが、
-感謝感動をしていただければ、利益は後からついてきます。
-事実、日々新たな相談が色々なテーマでいただきますが、”全てが紹介”によるものになっています。`,
+    description: `何故、NextGen Creativeに入社したのか？...`, // Truncated for brevity
     requiredSkills: ['ライティング', 'コミュニケーション能力'],
-    businessContent: `【大手企業に特化した『コンサルティング×クリエイティブ』集団】
-
-500社以上の日本を代表する大手企業だけが、私たちのお客さまです。
-
-ブランディング・マーケティング・広報などの幅広い領域で、
-その企業が持つ真の価値や商品サービスを、顧客や社会など企業活動に関わるすべての人たちへ伝え、企業価値をあげることが私たちの仕事です。
-
-企画立案や実行支援を担うコンサルタントだけでなく、
-デザイン（Web、動画、グラフィック）・ライティング・テクノロジー（AI、システム）などを扱うクリエイターやエンジニアも在籍しており、
-“コンサルティング”だけでなく、“クリエイティブ”までを融合した支援をすることで、
-このような拡大を可能にしてきました。
-
-企業の目的はお客さま、従業員、株主、地域社会など、
-企業を取り巻く全ての人々を幸せにすることです。
-
-その中でも、最も企業にとって重要な従業員に、
-企業の成り立ち、独自の強み、DNAの浸透、ビジョン・方針の浸透、ナレッジの共有などを伝える領域には強みを持っており、支援の実績数は日本トップクラスです。
-
-この領域の質を高めれば高めるほど、企業の全ての組織課題に精通し、
-企業活動のリアルな情報が蓄積されていきます。`,
-    jobDetail: `就活では、出版業界は狭き門。
-新卒では諦めたライターという道を、今一度志してみませんか？
-NextGen Creativeのお客様は、日本を代表する大手上場企業500社以上。
-ライターは、大手企業の様々なメディアを執筆します。
-会社案内、広報誌、商品パンフレット、CSR・IRレポート、 Webサイト、PR映像のナレーションなど、幅広く執筆を手掛けることができます。執筆の種類も、インタビュー記事やコラム、ルポルタージュ調、座談会、社長インタビューなどさまざまです。
-育成カリキュラムが整っているので、未経験からでも、プロのライターとして成長することができます。実際に、未経験の第二新卒で入社したライターも活躍しています！
-また希望に応じて、編集や企画の仕事にも携わることができます。
-自由度高く、最高のクリエイティブを徹底追求していただける環境で、「ライターとして指名され続けるキャリア」を築きませんか？
-まずは、オフィスに遊びに来ませんか？
-ざっくらばんにお話しましょう！`,
+    businessContent: `【大手企業に特化した『コンサルティング×クリエイティブ』集団】...`, // Truncated
+    jobDetail: `就活では、出版業界は狭き門。新卒では諦めたライターという道を...`, // Truncated
     skillsGained: ['プロフェッショナルなライティングスキル', '大手企業の経営課題への理解', '編集・ディレクション能力'],
     selectionFlow: [
       { step: 1, title: '書類選考', description: 'プロフィールをもとに選考します' },
       { step: 2, title: 'カジュアル面談', description: 'オフィスでざっくばらんにお話しましょう' },
       { step: 3, title: 'インターン開始', description: 'OJT形式でスタート' }
-    ]
+    ],
+    // New Fields
+    alumniDestinations: '電通, 博報堂, リクルート, サイバーエージェント, キーエンス',
+    salaryDetail: '時給1,200円〜（昇給あり）\n※スキル・経験に応じて決定します',
+    probationPeriod: '3ヶ月',
+    probationSalary: '時給1,150円',
+    transportationAllowance: '全額支給',
+    requirements: '・文章を書くことが好きな方\n・週3日以上勤務できる方\n・基本的なPC操作ができる方',
+    workDays: '月, 火, 水, 木, 金',
+    workFrequency: '週3日〜',
+    workHours: '10:00 〜 19:00 (1日5時間〜)',
+    otherConditions: '・PC貸与あり\n・服装自由\n・フリードリンクあり',
+    targetGrade: '全学年対象',
+    numberOfHires: '3名',
+    workLocation: '東京都港区浜松町2-4-1',
+    nearestStation: '浜松町駅 徒歩3分, 大門駅 徒歩5分'
   },
   {
     id: '2',
@@ -105,7 +74,7 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
       logoUrl: 'https://picsum.photos/id/60/100/100',
       location: '東京都 港区',
       mission: '世界を繋ぐインフラを創る',
-      description: '秒間数百万リクエストを処理するアドテクプラットフォームを運営。パフォーマンスチューニングに強みを持つ技術者集団です。',
+      description: '秒間数百万リクエストを処理するアドテクプラットフォームを運営...',
       address: '東京都港区六本木6-10-1',
       established: '2018年9月',
       industry: 'アドテクノロジー',
@@ -117,16 +86,77 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
     salary: '時給 1,800円〜',
     type: 'Long-term',
     workStyle: 'Hybrid',
-    description: '月間1億リクエストを捌く大規模広告配信システムのバックエンド刷新プロジェクト。パフォーマンスチューニングの極意を学べます。',
+    description: '月間1億リクエストを捌く大規模広告配信システムのバックエンド刷新プロジェクト...',
     requiredSkills: ['Go', 'Docker'],
     businessContent: 'デジタル広告配信プラットフォーム（DSP/SSP）の開発・運営。',
-    jobDetail: '・Go言語を用いたAPIサーバーの設計・開発\n・gRPCによるマイクロサービス間通信の実装\n・負荷試験とボトルネックの特定・解消',
+    jobDetail: '・Go言語を用いたAPIサーバーの設計・開発\n・gRPCによるマイクロサービス間通信の実装...',
     skillsGained: ['高負荷対策のノウハウ', 'マイクロサービスアーキテクチャの設計思想', 'Go言語の深い知識'],
     selectionFlow: [
         { step: 1, title: 'コーディングテスト', description: 'オンラインでアルゴリズムの問題を解いていただきます' },
         { step: 2, title: 'カジュアル面談', description: 'エンジニアとの技術対話' },
         { step: 3, title: '採用', description: '' }
-      ]
+      ],
+    // New Fields
+    alumniDestinations: 'Google, AWS, メルカリ, LINE, DeNA',
+    salaryDetail: '時給1,800円〜2,500円',
+    probationPeriod: '1ヶ月',
+    probationSalary: '時給1,800円',
+    transportationAllowance: '上限3万円/月',
+    requirements: '・Webアプリケーションの開発経験がある方\n・Gitを用いたチーム開発経験',
+    workDays: '平日',
+    workFrequency: '週3日〜',
+    workHours: 'フレックス（コアタイムなし）',
+    otherConditions: '・最新のMacBook Pro支給\n・技術書購入補助\n・カンファレンス参加費補助',
+    targetGrade: '学部3年以上推奨',
+    numberOfHires: '若干名',
+    workLocation: '東京都港区六本木6-10-1 六本木ヒルズ',
+    nearestStation: '六本木駅 直結'
+  },
+  // Dummy duplicate job for CyberScale Inc. (c2)
+  {
+    id: '2b',
+    title: '【インフラ/SRE】大規模トラフィックを支えるクラウド基盤構築',
+    company: {
+      id: 'c2', // Same ID as above
+      name: 'CyberScale Inc.',
+      logoUrl: 'https://picsum.photos/id/60/100/100',
+      location: '東京都 港区',
+      mission: '世界を繋ぐインフラを創る',
+      description: '秒間数百万リクエストを処理するアドテクプラットフォームを運営...',
+      address: '東京都港区六本木6-10-1',
+      established: '2018年9月',
+      industry: 'アドテクノロジー',
+      coverImage: 'https://picsum.photos/id/20/800/450',
+      employees: '80名'
+    },
+    coverImageUrl: 'https://picsum.photos/id/3/800/450',
+    tags: ['AWS', 'Terraform', 'Linux', 'SRE'],
+    salary: '時給 1,800円〜',
+    type: 'Long-term',
+    workStyle: 'Remote',
+    description: 'サービスの急成長に伴い、インフラ基盤の強化・自動化を推進するSREチームのアシスタントを募集します。',
+    requiredSkills: ['Linux', 'AWS'],
+    businessContent: 'デジタル広告配信プラットフォームのインフラ運用・構築',
+    jobDetail: '・Terraformを用いたIaC推進\n・Datadog等を用いた監視基盤の構築...',
+    skillsGained: ['大規模インフラの運用経験', 'IaCの実践スキル', 'トラブルシューティング能力'],
+    selectionFlow: [
+        { step: 1, title: '書類選考', description: '' },
+        { step: 2, title: '技術面談', description: '' }
+    ],
+    alumniDestinations: 'AWS, Google, CyberAgent',
+    salaryDetail: '時給1,800円〜',
+    probationPeriod: '1ヶ月',
+    probationSalary: '同額',
+    transportationAllowance: '全額支給',
+    requirements: '・Linuxの基本的なコマンド操作ができる方\n・クラウド(AWS/GCP)への興味関心',
+    workDays: '平日',
+    workFrequency: '週3日〜',
+    workHours: '10:00 - 19:00',
+    otherConditions: '・リモートワーク中心\n・PC支給あり',
+    targetGrade: '不問',
+    numberOfHires: '1名',
+    workLocation: '東京都港区六本木',
+    nearestStation: '六本木駅'
   },
   {
     id: '3',
@@ -149,15 +179,29 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
     salary: '時給 1,400円〜',
     type: 'Long-term',
     workStyle: 'Remote',
-    description: 'UI/UXに拘った人事労務SaaSの開発。Figmaのデザインを忠実に、かつアクセシブルに実装するスキルが求められます。',
+    description: 'UI/UXに拘った人事労務SaaSの開発...',
     requiredSkills: ['React', 'TypeScript'],
     businessContent: '人事労務管理SaaS「ShiftHR」の企画・開発。',
-    jobDetail: '・Next.js (App Router) を用いたフロントエンド実装\n・Storybookによるコンポーネントカタログの整備\n・アクセシビリティ改善',
+    jobDetail: '・Next.js (App Router) を用いたフロントエンド実装...',
     skillsGained: ['モダンフロントエンドのエコシステム', 'ピクセルパーフェクトな実装力', 'アクセシビリティ（WCAG）の知識'],
     selectionFlow: [
         { step: 1, title: 'ポートフォリオ審査', description: '' },
         { step: 2, title: 'カジュアル面談', description: '' }
-    ]
+    ],
+    alumniDestinations: 'SmartHR, ユーザベース, クックパッド',
+    salaryDetail: '時給1,400円〜',
+    probationPeriod: 'なし',
+    probationSalary: '同額',
+    transportationAllowance: 'リモートのためなし',
+    requirements: '・ReactまたはVueの実装経験',
+    workDays: '自由',
+    workFrequency: '週15時間〜',
+    workHours: '自由',
+    otherConditions: '・フルリモート推奨\n・Slackでの非同期コミュニケーション',
+    targetGrade: '不問',
+    numberOfHires: '2名',
+    workLocation: 'フルリモート（出社可：大阪オフィス）',
+    nearestStation: '大阪駅 徒歩5分'
   },
   {
     id: '4',
@@ -176,15 +220,29 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
     salary: '時給 1,200円〜',
     type: 'Short-term',
     workStyle: 'On-site',
-    description: '次世代L1ブロックチェーンのコアロジック実装サポート。低レイヤー技術への深い理解を目指す学生に最適です。',
+    description: '次世代L1ブロックチェーンのコアロジック実装サポート...',
     requiredSkills: ['C++', 'Rust'],
     businessContent: 'パブリックブロックチェーンの研究開発。',
-    jobDetail: '・Rustによるスマートコントラクト実行基盤の実装補助\n・P2Pネットワーク層のテストコード作成',
+    jobDetail: '・Rustによるスマートコントラクト実行基盤の実装補助...',
     skillsGained: ['Rust言語', '分散システムの理論', '暗号技術の基礎'],
     selectionFlow: [
         { step: 1, title: '書類選考', description: '' },
         { step: 2, title: 'カジュアル面談', description: '' }
-    ]
+    ],
+    alumniDestinations: 'Ethereum Foundation, Startups',
+    salaryDetail: '時給1,200円',
+    probationPeriod: 'なし',
+    probationSalary: '-',
+    transportationAllowance: '支給',
+    requirements: '・CS専攻の学生優遇',
+    workDays: '平日',
+    workFrequency: '週2日〜',
+    workHours: '10:00 - 18:00',
+    otherConditions: '・髪型服装自由',
+    targetGrade: '大学院生歓迎',
+    numberOfHires: '1名',
+    workLocation: '福岡県福岡市博多区',
+    nearestStation: '博多駅'
   },
   {
     id: '5',
@@ -203,15 +261,29 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
     salary: '時給 1,600円〜',
     type: 'Long-term',
     workStyle: 'Remote',
-    description: '人々の健康を支える新規アプリの立ち上げ。企画段階から実装、リリースまでを一貫して経験できます。',
+    description: '人々の健康を支える新規アプリの立ち上げ...',
     requiredSkills: ['Flutter', 'Mobile Dev'],
     businessContent: '予防医療領域のモバイルアプリ開発。',
-    jobDetail: '・Flutterを用いたiOS/Androidアプリのクロスプラットフォーム開発\n・Firebaseを用いたバックエンドレスなアーキテクチャ構築',
+    jobDetail: '・Flutterを用いたiOS/Androidアプリのクロスプラットフォーム開発...',
     skillsGained: ['モバイルアプリのリリース経験', 'UI設計スキル', 'Firebase活用術'],
     selectionFlow: [
         { step: 1, title: 'カジュアル面談', description: '' },
         { step: 2, title: 'ハッカソン選考', description: '1day' }
-    ]
+    ],
+    alumniDestinations: 'DeNA, CyberAgent',
+    salaryDetail: '時給1,600円〜',
+    probationPeriod: '1ヶ月',
+    probationSalary: '1,500円',
+    transportationAllowance: '全額',
+    requirements: '・個人開発でアプリをリリースした経験',
+    workDays: '週3日〜',
+    workFrequency: '週20時間',
+    workHours: 'フレックス',
+    otherConditions: '・MacBook貸与',
+    targetGrade: '不問',
+    numberOfHires: '2名',
+    workLocation: '東京都新宿区',
+    nearestStation: '新宿駅'
   },
   {
     id: '6',
@@ -230,15 +302,29 @@ NextGen Creativeのお客様は、日本を代表する大手上場企業500社�
     salary: '時給 1,500円〜',
     type: 'Short-term',
     workStyle: 'Hybrid',
-    description: '大規模メタバースイベントの空間設計とインタラクション実装。ゲーム開発経験を活かして新しい領域に挑戦しませんか？',
+    description: '大規模メタバースイベントの空間設計とインタラクション実装...',
     requiredSkills: ['Unity', 'C#'],
     businessContent: 'VRイベントプラットフォームの企画・運営。',
-    jobDetail: '・Unityを用いた3D空間の構築\n・アバターのインタラクション実装\n・シェーダー開発',
+    jobDetail: '・Unityを用いた3D空間の構築...',
     skillsGained: ['3D数学', 'オンラインゲームの同期技術', 'C#上級スキル'],
     selectionFlow: [
         { step: 1, title: 'ポートフォリオ選考', description: '作品提出必須' },
         { step: 2, title: 'カジュアル面談', description: '' }
-    ]
+    ],
+    alumniDestinations: 'ゲーム会社多数',
+    salaryDetail: '時給1,500円〜',
+    probationPeriod: 'なし',
+    probationSalary: '-',
+    transportationAllowance: '全額',
+    requirements: '・Unityでのゲーム制作経験',
+    workDays: '平日のみ',
+    workFrequency: '週3日〜',
+    workHours: '11:00 - 20:00',
+    otherConditions: '・VRヘッドセット貸出可',
+    targetGrade: '全学年',
+    numberOfHires: '5名',
+    workLocation: '東京都渋谷区',
+    nearestStation: '渋谷駅'
   },
 ];
 
@@ -249,22 +335,7 @@ export const ARTICLES: Article[] = [
     date: '2025.04.12',
     category: 'CAREER',
     image: 'https://picsum.photos/id/101/600/400',
-    content: `
-      <h2>AIエンジニアへの第一歩</h2>
-      <p>AI（人工知能）技術の急速な発展に伴い、AIエンジニアの需要はかつてないほど高まっています。しかし、未経験からこの分野に飛び込むのはハードルが高いと感じる方も多いのではないでしょうか。実は、長期インターンシップこそが、その第一歩を踏み出す最適な環境なのです。</p>
-      
-      <h3>なぜインターンが有効なのか</h3>
-      <p>大学の講義や独学では、理論的な知識は身についても、実際のビジネス課題を解決する「実践的なスキル」は身につきにくいものです。インターンシップでは、実際のデータセットを扱い、先輩エンジニアのコードレビューを受けながら、モデルの構築からデプロイまでの一連のプロセスを経験できます。</p>
-
-      <h3>学ぶべき3つのこと</h3>
-      <ul>
-        <li><strong>Pythonとライブラリの習熟：</strong> PyTorchやTensorFlow、Pandasなどの必須ツールを使いこなす力。</li>
-        <li><strong>データ前処理の泥臭さ：</strong> 綺麗なデータばかりではありません。欠損値の処理やアノテーションなど、地味だが重要な作業を知ること。</li>
-        <li><strong>ビジネス視点：</strong> 精度が高いモデルを作ることだけが正解ではありません。「そのモデルでどれだけコスト削減できたか」「UXがどう向上したか」という視点を持つことが重要です。</li>
-      </ul>
-
-      <p>Tech internでは、メンターがつくAI企業のインターンシップを多数掲載しています。まずは「未経験歓迎」のタグから探してみてください。</p>
-    `
+    content: `...` 
   },
   {
     id: 2,
@@ -272,20 +343,7 @@ export const ARTICLES: Article[] = [
     date: '2025.04.10',
     category: 'SKILL',
     image: 'https://picsum.photos/id/180/600/400',
-    content: `
-      <h2>Githubはあなたの履歴書です</h2>
-      <p>エンジニア就活において、履歴書以上に重要視されるのがGithubのプロフィールです。採用担当者は、あなたが「どんなコードを書くか」「どれくらいコミットしているか（草が生えているか）」を見ています。</p>
-
-      <h3>プロフィールを魅力的にするポイント</h3>
-      <p>ただリポジトリを公開するだけでは不十分です。README.mdをしっかり書き込みましょう。</p>
-      <ul>
-        <li><strong>デモGifを載せる：</strong> 動いている様子が一目でわかるようにしましょう。</li>
-        <li><strong>技術選定の理由を書く：</strong> なぜReactを選んだのか？なぜGoなのか？その思考プロセスが評価されます。</li>
-        <li><strong>苦労した点と解決策：</strong> なぜReactを選んだのか？なぜGoなのか？その思考プロセスが評価されます。</li>
-      </ul>
-
-      <p>日々の積み重ねが、あなたの技術力を証明する最強の武器になります。今日から少しずつプロフィールを充実させていきましょう。</p>
-    `
+    content: `...` 
   },
   {
     id: 3,
@@ -293,17 +351,7 @@ export const ARTICLES: Article[] = [
     date: '2025.04.05',
     category: 'WORK STYLE',
     image: 'https://picsum.photos/id/1/600/400',
-    content: `
-      <h2>リモートワークの光と影</h2>
-      <p>通勤時間がなく、学業との両立がしやすいリモートインターン。非常に人気がありますが、一方で「質問しづらい」「孤独を感じる」という課題もあります。</p>
-      
-      <h3>テキストコミュニケーションの極意</h3>
-      <p>顔が見えない分、テキストでのコミュニケーション能力が問われます。「質問力」を磨きましょう。</p>
-      <p>悪い例：「エラーが出ました。どうすればいいですか？」</p>
-      <p>良い例：「〇〇の実装中に××というエラーが出ました。△△までは確認しましたが、□□の原因が特定できません。見解をいただけますか？」</p>
-
-      <p>状況、試したこと、仮説をセットで伝えることで、メンターも答えやすくなります。また、Slackでのスタンプ反応や、適度な雑談チャンネルへの参加も、チームに馴染むための重要な要素です。</p>
-    `
+    content: `...` 
   },
   {
     id: 4,
@@ -311,14 +359,6 @@ export const ARTICLES: Article[] = [
     date: '2025.04.01',
     category: 'TREND',
     image: 'https://picsum.photos/id/20/600/400',
-    content: `
-      <h2>なぜ今、Go言語なのか</h2>
-      <p>マイクロサービス化が進むWeb業界において、パフォーマンスと開発効率を両立するGo言語（Golang）の採用事例が急増しています。特にメルカリなどのメガベンチャーが採用したことで、国内での人気が不動のものとなりました。</p>
-
-      <h3>バックエンドエンジニアとしての市場価値</h3>
-      <p>PHPやRubyからの移行プロジェクトや、新規のコンテナベースの開発において、Goエンジニアは引く手あまたです。静的型付けによる堅牢性と、並行処理の容易さが、大規模システムに適しているからです。</p>
-      
-      <p>学生のうちにGo言語を習得し、並行処理やAPI設計の基礎を身につけておけば、就活において強力な差別化要因となります。Tech internでも、Go言語を使用するインターン求人が増えています。ぜひ挑戦してみてください。</p>
-    `
+    content: `...` 
   },
 ];

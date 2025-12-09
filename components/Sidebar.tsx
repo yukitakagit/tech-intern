@@ -50,7 +50,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Filter Groups - No frame, just text */}
       <div className="space-y-10">
         
-        {/* Occupation - Detailed */}
+         {/* Industry (Moved Up) */}
+         <div>
+            <h4 className="flex items-center gap-2 text-xs font-black text-gray-900 uppercase tracking-wider mb-4 border-l-4 border-black pl-2">
+                業種
+            </h4>
+            <div className="space-y-3">
+                {[
+                    'SaaS', 
+                    'AI', 
+                    'FinTech', 
+                    'ゲーム', 
+                    'Eコマース',
+                    '受託開発',
+                    'コンサルティング',
+                    'AdTech',
+                    'Web3',
+                    'Blockchain',
+                    'HealthTech',
+                    'Metaverse',
+                    'VR'
+                ].map(item => (
+                    <label key={item} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center w-4 h-4 flex-shrink-0">
+                            <input 
+                                type="checkbox" 
+                                checked={filters.industries.includes(item)}
+                                onChange={() => handleCheckboxChange('industries', item)}
+                                className="peer appearance-none w-4 h-4 border border-gray-400 rounded-sm checked:bg-black checked:border-black transition-all cursor-pointer" 
+                            />
+                            <div className="absolute hidden peer-checked:block text-white pointer-events-none">
+                                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                    <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <span className="text-xs text-gray-600 font-bold group-hover:text-black transition-colors">{item}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+
+        {/* Occupation */}
         <div>
             <h4 className="flex items-center gap-2 text-xs font-black text-gray-900 uppercase tracking-wider mb-4 border-l-4 border-black pl-2">
                 職種
@@ -68,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     'データサイエンス',
                     'ゲーム / XR',
                     '組み込み / IoT',
-                    'ライター', // Added from constants
+                    'ライター',
                     '編集',
                     'マーケティング'
                 ].map(item => (
@@ -107,47 +148,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 type="checkbox" 
                                 checked={filters.languages.includes(item)}
                                 onChange={() => handleCheckboxChange('languages', item)}
-                                className="peer appearance-none w-4 h-4 border border-gray-400 rounded-sm checked:bg-black checked:border-black transition-all cursor-pointer" 
-                            />
-                            <div className="absolute hidden peer-checked:block text-white pointer-events-none">
-                                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                    <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <span className="text-xs text-gray-600 font-bold group-hover:text-black transition-colors">{item}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-
-         {/* Industry */}
-         <div>
-            <h4 className="flex items-center gap-2 text-xs font-black text-gray-900 uppercase tracking-wider mb-4 border-l-4 border-black pl-2">
-                業種
-            </h4>
-            <div className="space-y-3">
-                {[
-                    'SaaS', 
-                    'AI', 
-                    'FinTech', 
-                    'ゲーム', 
-                    'Eコマース',
-                    '受託開発',
-                    'コンサルティング',
-                    'AdTech',
-                    'Web3',
-                    'Blockchain',
-                    'HealthTech',
-                    'Metaverse',
-                    'VR'
-                ].map(item => (
-                    <label key={item} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center w-4 h-4 flex-shrink-0">
-                            <input 
-                                type="checkbox" 
-                                checked={filters.industries.includes(item)}
-                                onChange={() => handleCheckboxChange('industries', item)}
                                 className="peer appearance-none w-4 h-4 border border-gray-400 rounded-sm checked:bg-black checked:border-black transition-all cursor-pointer" 
                             />
                             <div className="absolute hidden peer-checked:block text-white pointer-events-none">

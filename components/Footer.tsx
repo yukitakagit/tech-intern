@@ -25,10 +25,10 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer className="bg-white border-t border-gray-200 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16 justify-between">
               
               {/* 運営会社 */}
-              <div>
+              <div className="w-full">
                   <h5 className="font-bold text-sm text-gray-900 mb-6 uppercase tracking-wider">運営会社</h5>
                   <ul className="space-y-3 text-xs font-medium text-gray-500">
                       <li>
@@ -40,7 +40,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Techinternについて */}
-              <div>
+              <div className="w-full">
                   <h5 className="font-bold text-sm text-gray-900 mb-6 uppercase tracking-wider">Tech internについて</h5>
                   <ul className="space-y-3 text-xs font-medium text-gray-500">
                       <li>
@@ -62,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Legal */}
-              <div>
+              <div className="w-full">
                   <h5 className="font-bold text-sm text-gray-900 mb-6 uppercase tracking-wider">Legal</h5>
                   <ul className="space-y-3 text-xs font-medium text-gray-500">
                       <li>
@@ -84,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Navigation */}
-              <div>
+              <div className="w-full">
                   <h5 className="font-bold text-sm text-gray-900 mb-6 uppercase tracking-wider">Navigation</h5>
                   <ul className="space-y-3 text-xs font-medium text-gray-500">
                       <li>

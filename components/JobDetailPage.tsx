@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { JobListing } from '../types';
-import { MapPin, Clock, DollarSign, ArrowRight, CheckCircle, Users, Briefcase, Star, Building2 } from 'lucide-react';
+import { JOB_LISTINGS } from '../constants'; // Import constants
+import { MapPin, Clock, DollarSign, ArrowRight, CheckCircle, Users, Briefcase, Star, Building2, ChevronRight, Home } from 'lucide-react';
 
 interface JobDetailPageProps {
   job: JobListing;
@@ -8,24 +10,26 @@ interface JobDetailPageProps {
   onToggleFavorite: () => void;
   onNavigateCompany: (companyId: string) => void;
   onNavigateApply: (jobId: string) => void;
+  onNavigateJobDetail: (id: string) => void; // Added prop
   onBack: () => void;
 }
 
-export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, onToggleFavorite, onNavigateCompany, onNavigateApply, onBack }) => {
+export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, onToggleFavorite, onNavigateCompany, onNavigateApply, onNavigateJobDetail, onBack }) => {
+  
+  // Find other jobs by the same company, excluding the current one
+  const otherJobs = JOB_LISTINGS.filter(j => j.company.id === job.company.id && j.id !== job.id);
+
   return (
     <div className="bg-white min-h-screen pb-20">
       {/* Hero Header - Company Atmosphere */}
-      <div className="relative h-[400px] w-full bg-gray-900">
+      <div className="relative h-[300px] md:h-[400px] w-full bg-gray-900">
         <img 
           src={job.coverImageUrl} 
           alt={job.title} 
-          className="w-full h-full object-cover opacity-70"
+          className="w-full h-full object-cover opacity-60"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 text-white max-w-7xl mx-auto">
-           <button onClick={onBack} className="text-sm font-bold text-gray-300 hover:text-white mb-6 flex items-center gap-1">
-             &larr; 募集一覧に戻る
-           </button>
            <div 
              className="inline-flex items-center gap-3 mb-4 cursor-pointer hover:opacity-80 transition-opacity bg-white/10 backdrop-blur-md px-4 py-2 rounded-full"
              onClick={() => onNavigateCompany(job.company.id)}
@@ -33,7 +37,7 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
               <img src={job.company.logoUrl} className="w-8 h-8 rounded-full bg-white border border-white" alt=""/>
               <span className="font-bold tracking-wider">{job.company.name}</span>
            </div>
-           <h1 className="text-2xl md:text-4xl font-black leading-tight mb-6 max-w-4xl">{job.title}</h1>
+           <h1 className="text-xl md:text-3xl font-black leading-tight mb-6 max-w-4xl">{job.title}</h1>
            <div className="flex flex-wrap gap-2">
              {job.tags.map(tag => (
                <span key={tag} className="px-3 py-1 bg-white text-black rounded-sm text-xs font-bold">
@@ -50,7 +54,7 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
           {/* Main Content */}
           <div className="flex-1 space-y-16">
             
-            {/* Company Introduction (Previously Work Overview) */}
+            {/* 1. Company Introduction */}
             <section>
                  <div className="flex items-center gap-3 mb-6">
                      <div className="w-10 h-1 bg-black"></div>
@@ -61,7 +65,7 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                 </p>
             </section>
 
-            {/* Business Content - Added New Section */}
+            {/* 2. Business Content */}
             {(job.businessContent) && (
                 <section>
                     <div className="flex items-center gap-3 mb-6">
@@ -74,7 +78,7 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                 </section>
             )}
 
-            {/* Job Detail */}
+            {/* 3. Job Detail */}
             <section>
                 <div className="flex items-center gap-3 mb-6">
                      <div className="w-10 h-1 bg-black"></div>
@@ -85,7 +89,46 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                 </p>
             </section>
 
-            {/* Skills - Simple List */}
+            {/* 4. Recruitment Requirements Table (Flat Design) */}
+            <section>
+                <div className="flex items-center gap-3 mb-6">
+                     <div className="w-10 h-1 bg-black"></div>
+                     <h3 className="text-xl font-black text-gray-900 uppercase">募集要項</h3>
+                </div>
+                <div className="overflow-hidden border-t border-gray-200">
+                    <table className="w-full text-sm text-left">
+                        <tbody className="divide-y divide-gray-200 border-b border-gray-200">
+                            {[
+                                { label: 'インターン卒業生の内定先企業', value: job.alumniDestinations },
+                                { label: '給与詳細', value: job.salaryDetail },
+                                { label: '試用期間', value: job.probationPeriod },
+                                { label: '使用期間の給与', value: job.probationSalary },
+                                { label: '交通費の支給', value: job.transportationAllowance },
+                                { label: '応募資格', value: job.requirements ? <div dangerouslySetInnerHTML={{__html: job.requirements}} /> : '-' }, // Allow HTML for requirements
+                                { label: '勤務曜日', value: job.workDays },
+                                { label: '勤務日数', value: job.workFrequency },
+                                { label: '勤務時間', value: job.workHours },
+                                { label: 'その他勤務条件', value: job.otherConditions }, // Added
+                                { label: '対象学年', value: job.targetGrade },
+                                { label: '募集人数', value: job.numberOfHires },
+                                { label: '勤務地', value: job.workLocation },
+                                { label: '最寄り駅', value: job.nearestStation },
+                            ].map((row, idx) => (
+                                <tr key={idx} className="bg-white">
+                                    <th className="py-4 px-2 md:px-0 font-bold text-gray-500 w-1/3 md:w-1/4 align-top">
+                                        {row.label}
+                                    </th>
+                                    <td className="py-4 px-2 md:px-6 text-gray-800 font-medium whitespace-pre-wrap align-top">
+                                        {typeof row.value === 'string' ? row.value || '-' : row.value}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            {/* 5. Skills */}
             <section className="border-t border-gray-100 pt-10">
                 <h3 className="text-xl font-black text-gray-900 mb-6">
                     身につくスキル
@@ -101,7 +144,7 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                 </div>
             </section>
 
-             {/* Flow */}
+             {/* 6. Flow */}
              <section className="border-t border-gray-100 pt-10">
                 <h3 className="text-xl font-black text-gray-900 mb-8">
                     選考フロー
@@ -127,13 +170,13 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
             </section>
           </div>
 
-          {/* Sidebar - Redesigned */}
+          {/* Sidebar */}
           <div className="w-full lg:w-96 space-y-8">
             <div 
                 className="bg-white rounded-sm shadow-xl border border-gray-100 sticky top-24 overflow-hidden cursor-pointer group hover:border-blue-500 transition-colors"
                 onClick={() => onNavigateCompany(job.company.id)}
             >
-                {/* Top Half Image - Logo removed as requested */}
+                {/* Top Half Image */}
                 <div 
                     className="h-32 w-full bg-gray-200 relative overflow-hidden"
                 >
@@ -169,7 +212,6 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                         </div>
                     </div>
                     
-                    {/* Job Conditions (Brief) */}
                     <div className="grid grid-cols-2 gap-4 mb-8">
                         <div className="bg-gray-50 p-3 rounded-sm">
                             <span className="block text-xs font-bold text-gray-400 mb-1">給与</span>
@@ -204,6 +246,30 @@ export const JobDetailPage: React.FC<JobDetailPageProps> = ({ job, isFavorite, o
                     
                 </div>
             </div>
+
+            {/* Other Jobs from this company */}
+            {otherJobs.length > 0 && (
+                <div className="bg-white rounded-sm border border-gray-200 p-6">
+                    <h4 className="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">この企業の他の求人</h4>
+                    <div className="space-y-4">
+                        {otherJobs.map(otherJob => (
+                            <div 
+                                key={otherJob.id} 
+                                onClick={() => onNavigateJobDetail(otherJob.id)}
+                                className="group cursor-pointer block"
+                            >
+                                <div className="text-xs font-bold text-gray-400 mb-1">{otherJob.workStyle}</div>
+                                <h5 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                                    {otherJob.title}
+                                </h5>
+                                <div className="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                                    <Clock size={12}/> {otherJob.salary}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
           </div>
 
         </div>

@@ -14,7 +14,7 @@ export interface Company {
   industry?: string;
   coverImage?: string;
   employees?: string;
-  businessContent?: string; // New field for Company Dashboard
+  businessContent?: string;
 }
 
 export interface JobListing {
@@ -28,16 +28,31 @@ export interface JobListing {
   workStyle: 'Remote' | 'Hybrid' | 'On-site';
   description: string;
   requiredSkills: string[];
-  status?: 'published' | 'draft'; // New field for draft functionality
+  status?: 'published' | 'draft';
   
   // Detailed fields
   businessContent?: string;
   jobDetail?: string;
   skillsGained?: string[];
-  skillsGainedDescription?: string; // New
-  corporateCulture?: string; // New
-  onboardingProcess?: string; // New
+  skillsGainedDescription?: string;
+  onboardingProcess?: string;
   selectionFlow?: { step: number; title: string; description: string }[];
+
+  // New Detailed Fields
+  alumniDestinations?: string; // インターン卒業生の内定先企業
+  salaryDetail?: string; // 給与詳細
+  probationPeriod?: string; // 試用期間
+  probationSalary?: string; // 使用期間の給与
+  transportationAllowance?: string; // 交通費の支給
+  requirements?: string; // 応募資格
+  workDays?: string; // 勤務曜日
+  workFrequency?: string; // 勤務日数
+  workHours?: string; // 勤務時間
+  otherConditions?: string; // その他勤務条件 (Added)
+  targetGrade?: string; // 対象学年
+  numberOfHires?: string; // 募集人数
+  workLocation?: string; // 勤務地
+  nearestStation?: string; // 最寄り駅
 }
 
 export interface Article {
@@ -46,7 +61,7 @@ export interface Article {
   date: string;
   category: string;
   image: string;
-  content: string; // Detailed content
+  content: string;
   status?: 'published' | 'draft';
 }
 
@@ -94,7 +109,7 @@ export type AppRoute =
   | { name: 'COMPANY_PROFILE' }
   | { name: 'TERMS' }
   | { name: 'PRIVACY' }
-  | { name: 'TOKUSHO' } // Added
+  | { name: 'TOKUSHO' }
   // Company Side Routes
   | { name: 'COMPANY_LP' }
   | { name: 'COMPANY_LOGIN' }

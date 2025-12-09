@@ -26,7 +26,7 @@ import { CompanyDashboard } from './components/CompanySide/CompanyDashboard';
 import { AdminDashboard } from './components/AdminDashboard'; 
 import { JOB_LISTINGS, ARTICLES, INITIAL_USER_PROFILE } from './constants';
 import { JobListing, FilterState, AppRoute, Article, FAQ, UserProfile } from './types';
-import { Search, LogOut, ArrowRight, Instagram } from 'lucide-react';
+import { Search, LogOut, ArrowRight, Instagram, ChevronRight } from 'lucide-react';
 
 const App: React.FC = () => {
   const [route, setRoute] = useState<AppRoute>({ name: 'HOME' });
@@ -205,6 +205,99 @@ const App: React.FC = () => {
         if (newFavs.has(jobId)) { newFavs.delete(jobId); } else { newFavs.add(jobId); }
         return newFavs;
     });
+  };
+
+  const isCompanyMode = [
+      'COMPANY_LP', 
+      'COMPANY_LOGIN', 
+      'COMPANY_REGISTER', 
+      'COMPANY_DASHBOARD'
+  ].includes(route.name);
+
+  // Global Breadcrumb Component
+  const Breadcrumbs = () => {
+      // Don't show on Home or Company side pages
+      if (route.name === 'HOME' || isCompanyMode || adminUser) return null;
+
+      let items: { label: string, onClick?: () => void }[] = [{ label: 'インターンシップ募集情報ならTech intern', onClick: navigateHome }];
+
+      switch (route.name) {
+          case 'ALL_JOBS':
+              items.push({ label: '募集職種一覧' });
+              break;
+          case 'COMPANY_LIST':
+              items.push({ label: '掲載企業一覧' });
+              break;
+          case 'COMPANY_DETAIL':
+              items.push({ label: '掲載企業一覧', onClick: navigateCompanyList });
+              const company = JOB_LISTINGS.find(j => j.company.id === (route as any).id)?.company;
+              items.push({ label: company?.name || 'Company' });
+              break;
+          case 'JOB_DETAIL':
+              const job = JOB_LISTINGS.find(j => j.id === (route as any).id);
+              if (job) {
+                  items.push({ label: job.company.industry || 'IT/Web' }); // Industry
+                  items.push({ label: job.company.name, onClick: () => navigateCompany(job.company.id) }); // Company
+                  items.push({ label: job.tags[0] || 'エンジニア' }); // Job Category
+                  items.push({ label: job.title }); // Title
+              }
+              break;
+          case 'ARTICLE_LIST':
+              items.push({ label: 'コラム一覧' });
+              break;
+          case 'ARTICLE_DETAIL':
+              items.push({ label: 'コラム一覧', onClick: navigateArticleList });
+              const article = articles.find(a => a.id === (route as any).id);
+              items.push({ label: article?.title || 'Article' });
+              break;
+          case 'LOGIN':
+              items.push({ label: 'ログイン' });
+              break;
+          case 'REGISTER':
+              items.push({ label: '会員登録' });
+              break;
+          case 'MYPAGE':
+              items.push({ label: 'マイページ' });
+              break;
+          case 'APPLICATION':
+              items.push({ label: '応募フォーム' });
+              break;
+          case 'COMPANY_PROFILE':
+              items.push({ label: '会社概要' });
+              break;
+          case 'TERMS':
+              items.push({ label: '利用規約' });
+              break;
+          case 'PRIVACY':
+              items.push({ label: 'プライバシーポリシー' });
+              break;
+          case 'TOKUSHO':
+              items.push({ label: '特定商取引法に基づく表記' });
+              break;
+      }
+
+      return (
+          <div className="w-full bg-gray-50 border-b border-gray-200">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                  <nav className="flex items-center text-[10px] md:text-xs text-gray-500 font-medium overflow-x-auto whitespace-nowrap no-scrollbar">
+                      {items.map((item, index) => (
+                          <React.Fragment key={index}>
+                              {index > 0 && <ChevronRight size={12} className="flex-shrink-0 mx-1 text-gray-300"/>}
+                              {item.onClick ? (
+                                  <button onClick={item.onClick} className="hover:text-black hover:underline flex-shrink-0">
+                                      {item.label}
+                                  </button>
+                              ) : (
+                                  <span className={`flex-shrink-0 ${index === items.length - 1 ? 'text-gray-800 font-bold truncate max-w-[200px] md:max-w-md' : ''}`}>
+                                      {item.label}
+                                  </span>
+                              )}
+                          </React.Fragment>
+                      ))}
+                  </nav>
+              </div>
+          </div>
+      );
   };
 
   // ----- RENDER HELPERS -----
@@ -388,6 +481,7 @@ const App: React.FC = () => {
                     onToggleFavorite={() => toggleFavorite(job.id)}
                     onNavigateCompany={(companyId) => navigateCompany(companyId, job.id)} 
                     onNavigateApply={navigateApply}
+                    onNavigateJobDetail={navigateJobDetail} 
                     onBack={navigateHome} 
                 />
             </div>
@@ -440,13 +534,6 @@ const App: React.FC = () => {
           </button>
       </div>
   );
-
-  const isCompanyMode = [
-      'COMPANY_LP', 
-      'COMPANY_LOGIN', 
-      'COMPANY_REGISTER', 
-      'COMPANY_DASHBOARD'
-  ].includes(route.name);
 
   // Admin Dashboard Route
   if ((route as any).name === 'ADMIN_DASHBOARD' && adminUser) {
@@ -517,6 +604,9 @@ const App: React.FC = () => {
         onNavigateRecruiter={navigateCompanyLP}
         onLogout={handleLogout}
       />
+      
+      {/* Global Breadcrumbs (New) */}
+      <Breadcrumbs />
       
       <main className="flex-grow w-full" key={route.name + ((route as any).id || '')}>
         {route.name === 'HOME' && renderHome()}
